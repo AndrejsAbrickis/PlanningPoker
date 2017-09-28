@@ -19,6 +19,13 @@ namespace signalR_demo
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .ConfigureLogging((context, factory) =>
+                {
+                    factory.AddConfiguration(context.Configuration.GetSection("Logging"));
+                    factory.AddConsole();
+                    factory.AddDebug();
+                })
+                .UseKestrel()
                 .UseStartup<Startup>()
                 .Build();
     }

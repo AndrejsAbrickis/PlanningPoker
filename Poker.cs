@@ -1,30 +1,45 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 
 namespace signalR_demo
 {
-    public class Poker : Hub
+    public class Poker : HubWithPresence
     {
-        public Task Send(string message)
+        public Poker(IUserTracker<Poker> userTracker) : base(userTracker)
         {
-            return Clients.All.InvokeAsync(HubEvents.Send, $"Message from server: {message}");
         }
 
-        // public override async Task OnConnectedAsync()
-        // {
-        //     await Clients.Client(Context.ConnectionId).InvokeAsync("SetUsersOnline", await GetUsersOnline());
-
-        //     await base.OnConnectedAsync();
-        // }
-
-        public Task OnUsersJoined(string users)
+        public override async Task OnConnectedAsync()
         {
-            return Clients.All.InvokeAsync(HubEvents.UsersJoined, users);
+            await Clients.Client(Context.ConnectionId).InvokeAsync(HubEvents.SetUsersOnline, await GetUsersOnline());
+
+            await base.OnConnectedAsync();
         }
 
-        public Task OnUsersLeft(string users)
+        public override Task OnUsersJoined(UserDetails[] users)
         {
-            return Clients.All.InvokeAsync(HubEvents.UsersLeft, users);
+            return Clients.Client(Context.ConnectionId).InvokeAsync(HubEvents.UsersJoined, users);
+        }
+
+        public override Task OnUsersLeft(UserDetails[] users)
+        {
+            return Clients.Client(Context.ConnectionId).InvokeAsync(HubEvents.UsersLeft, users);
+        }
+
+        public async Task Send(string message)
+        {
+            //var allUsersOnline = await _userTracker.UsersOnline();
+            var pokerMessage = new PokerMessage(Context.Connection.ConnectionId, message);
+            await Clients.All.InvokeAsync(HubEvents.Send, pokerMessage);
+        }
+
+        public async Task JoinUser(string userName)
+        {
+            var userDetails = new UserDetails(Context.Connection.ConnectionId, userName);
+            await _userTracker.UpdateUser(Context.Connection, userDetails);
+
+            await Clients.All.InvokeAsync(HubEvents.JoinUser, userDetails);
         }
     }
 
@@ -33,5 +48,18 @@ namespace signalR_demo
         public const string Send = "Send";
         public const string UsersJoined = "UsersJoined";
         public const string UsersLeft = "UsersLeft";
+        public const string SetUsersOnline = "SetUsersOnline";
+        public const string JoinUser = "JoinUser";
+    }
+
+    public class PokerMessage
+    {
+        public PokerMessage(string connectionId, string message)
+        {
+            ConnectionId = connectionId;
+            Message = message;
+        }
+        public string ConnectionId { get; }
+        public string Message { get; }
     }
 }

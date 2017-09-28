@@ -26,6 +26,13 @@ namespace signalR_demo
             return Task.CompletedTask;
         }
 
+        public Task UpdateUser(HubConnectionContext connection, UserDetails userDetails)
+        {
+            _usersOnline.AddOrUpdate(connection, userDetails, (odlKey, oldValue) => userDetails);
+
+            return Task.CompletedTask;
+        }
+
         public Task RemoveUser(HubConnectionContext connection)
         {
             if (_usersOnline.TryRemove(connection, out var userDetails))

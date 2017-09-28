@@ -9,6 +9,7 @@ namespace signalR_demo
     {
         Task<IEnumerable<UserDetails>> UsersOnline();
         Task AddUser(HubConnectionContext connection, UserDetails userDetails);
+        Task UpdateUser(HubConnectionContext connection, UserDetails userDetails);
         Task RemoveUser(HubConnectionContext connection);
 
         event Action<UserDetails[]> UsersJoined;
