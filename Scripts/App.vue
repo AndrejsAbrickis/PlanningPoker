@@ -2,13 +2,31 @@
     <div id="app">
         <div v-if="player.signedIn">
             <h2>Planning Poker Vue APP</h2>
-            <v-text-field v-model="message" name="message" label="Message" id="message"></v-text-field>
-            <v-btn outline class="indigo--text" @click="sendMessage">Send Message</v-btn>
+
+            <v-container fluid grid-list-sm>
+                <v-layout row wrap>
+                    <v-flex xs2 v-for="card in ['0', '1/2', '1', '2', '3', '5', '8', '10', '20', '40']" :key="card">
+                        <v-card class="purple white--text" @click="playCard(card)">
+                            <v-card-text>
+                                <h3>{{card}}</h3>
+                            </v-card-text>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+
+
             <div>
-                <h4>Messages</h4>
+                <h4>Cards</h4>
                 <p v-for="messageItem in messages" :key="messageItem.ConnectionId">
                     {{ messageItem.Message }}
                 </p>
+            </div>
+            <div>
+                <v-chip v-for="(user, key) in playersOnline" :key="key" class="grey lighten-2">
+                    <v-avatar class="teal">{{ user.Name.charAt(0) }}</v-avatar>
+                    {{ user.Name }}
+                </v-chip>
             </div>
         </div>
         <v-container grid-list-xl text-xs-center v-if="!player.signedIn">
@@ -52,6 +70,7 @@ export default {
                 name: '',
                 signedIn: false,
             },
+            playersOnline: {}
         };
     },
     mounted() {
@@ -81,15 +100,17 @@ export default {
         join() {
             this.pokerHub.invoke(HUB_EVENTS.JoinUser, this.player.name);
         },
-        sendMessage() {
-            this.pokerHub.invoke(HUB_EVENTS.Send, this.message);
+        playCard(card) {
+            this.pokerHub.invoke(HUB_EVENTS.Send, card);
         },
-        handleUserJoined(message) {
-            console.log(`JoinUser called`);
-            console.log(message);
+        handleUserJoined(user) {
+            console.log(`handleUserJoined`);
+            console.log(user);
             this.player.signedIn = true;
+            this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name });
         },
         handleSend(message) {
+            console.log(`handleSend`);
             console.log(message);
             this.messages.push(message);
             this.message = '';
