@@ -31976,7 +31976,7 @@ exports = module.exports = __webpack_require__(32)(undefined);
 
 
 // module
-exports.push([module.i, "\n#app {\n    font-family: 'Avenir', Helvetica, Arial, sans-serif;\n    -webkit-font-smoothing: antialiased;\n    -moz-osx-font-smoothing: grayscale;\n    text-align: center;\n    color: #2c3e50;\n    margin-top: 60px;\n}\n", ""]);
+exports.push([module.i, "\n#app {\n    font-family: 'Avenir', Helvetica, Arial, sans-serif;\n    -webkit-font-smoothing: antialiased;\n    -moz-osx-font-smoothing: grayscale;\n    text-align: center;\n    color: #2c3e50;\n    margin-top: 24px;\n}\n", ""]);
 
 // exports
 
@@ -32421,6 +32421,7 @@ module.exports = function normalizeComponent (
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__aspnet_signalr_client__ = __webpack_require__(37);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__aspnet_signalr_client___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__aspnet_signalr_client__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Scripts_PlayersOnline_vue__ = __webpack_require__(60);
 //
 //
 //
@@ -32467,6 +32468,8 @@ module.exports = function normalizeComponent (
 //
 //
 //
+//
+
 
 
 
@@ -32482,10 +32485,16 @@ const HUB_EVENTS = {
     JoinUser: "JoinUser"
 };
 
+const CARDS = [{ value: 0, label: '0' }, { value: 0.5, label: '1/2' }, { value: 1, label: '1' }, { value: 2, label: '2' }, { value: 3, label: '3' }, { value: 5, label: '5' }, { value: 8, label: '8' }, { value: 13, label: '13' }, { value: 20, label: '20' }, { value: 40, label: '40' }, { value: 100, label: '80' }, { value: Infinity, label: '?' }];
+
 /* harmony default export */ __webpack_exports__["a"] = ({
     name: 'app',
+    components: {
+        PlayersOnline: __WEBPACK_IMPORTED_MODULE_1__Scripts_PlayersOnline_vue__["a" /* default */]
+    },
     data() {
         return {
+            cards: CARDS,
             pokerHub: '',
             message: '',
             messages: [],
@@ -35107,35 +35116,60 @@ var render = function() {
                   _c(
                     "v-layout",
                     { attrs: { row: "", wrap: "" } },
-                    _vm._l(
-                      ["0", "1/2", "1", "2", "3", "5", "8", "10", "20", "40"],
-                      function(card) {
-                        return _c(
-                          "v-flex",
-                          { key: card, attrs: { xs2: "" } },
-                          [
-                            _c(
-                              "v-card",
-                              {
-                                staticClass: "purple white--text",
-                                on: {
-                                  click: function($event) {
-                                    _vm.playCard(card)
-                                  }
-                                }
-                              },
-                              [
-                                _c("v-card-text", [
-                                  _c("h3", [_vm._v(_vm._s(card))])
-                                ])
-                              ],
-                              1
-                            )
-                          ],
-                          1
-                        )
-                      }
-                    )
+                    [
+                      _c(
+                        "v-flex",
+                        { attrs: { xs8: "" } },
+                        [
+                          _c(
+                            "v-layout",
+                            { attrs: { row: "", wrap: "" } },
+                            _vm._l(_vm.cards, function(card) {
+                              return _c(
+                                "v-flex",
+                                {
+                                  key: card.value,
+                                  attrs: { xs4: "", sm3: "", md2: "" }
+                                },
+                                [
+                                  _c(
+                                    "v-card",
+                                    {
+                                      staticClass: "purple white--text",
+                                      on: {
+                                        click: function($event) {
+                                          _vm.playCard(card.value)
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c("v-card-text", [
+                                        _c("h3", [_vm._v(_vm._s(card.label))])
+                                      ])
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            })
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-flex",
+                        { attrs: { xs4: "" } },
+                        [
+                          _c("players-online", {
+                            attrs: { players: _vm.playersOnline }
+                          })
+                        ],
+                        1
+                      )
+                    ],
+                    1
                   )
                 ],
                 1
@@ -35157,27 +35191,6 @@ var render = function() {
                   })
                 ],
                 2
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
-                _vm._l(_vm.playersOnline, function(user, key) {
-                  return _c(
-                    "v-chip",
-                    { key: key, staticClass: "grey lighten-2" },
-                    [
-                      _c("v-avatar", { staticClass: "teal" }, [
-                        _vm._v(_vm._s(user.Name.charAt(0)))
-                      ]),
-                      _vm._v(
-                        "\n                " +
-                          _vm._s(user.Name) +
-                          "\n            "
-                      )
-                    ],
-                    1
-                  )
-                })
               )
             ],
             1
@@ -35187,7 +35200,6 @@ var render = function() {
       !_vm.player.signedIn
         ? _c(
             "v-container",
-            { attrs: { "grid-list-xl": "", "text-xs-center": "" } },
             [
               _c(
                 "v-layout",
@@ -35195,11 +35207,19 @@ var render = function() {
                 [
                   _c(
                     "v-flex",
-                    { attrs: { xs8: "", "offset-xs2": "" } },
+                    {
+                      attrs: {
+                        xs12: "",
+                        sm10: "",
+                        "offset-sm1": "",
+                        md6: "",
+                        "offset-md3": ""
+                      }
+                    },
                     [
                       _c(
                         "v-card",
-                        { staticClass: "grey lighten-4" },
+                        { staticClass: "grey lighten-4", attrs: { dark: "" } },
                         [
                           _c(
                             "v-card-text",
@@ -35256,6 +35276,118 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
      require("vue-hot-reload-api").rerender("data-v-489acb3c", esExports)
+  }
+}
+
+/***/ }),
+/* 60 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PlayersOnline_vue__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7e5cc400_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_PlayersOnline_vue__ = __webpack_require__(62);
+var disposed = false
+var normalizeComponent = __webpack_require__(35)
+/* script */
+
+/* template */
+
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PlayersOnline_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7e5cc400_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_PlayersOnline_vue__["a" /* default */],
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "PlayersOnline.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] PlayersOnline.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-7e5cc400", Component.options)
+  } else {
+    hotAPI.reload("data-v-7e5cc400", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
+
+
+/***/ }),
+/* 61 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    props: {
+        players: Object
+    }
+});
+
+/***/ }),
+/* 62 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("p", [_vm._v("Players Online")]),
+      _vm._v(" "),
+      _vm._l(_vm.players, function(player, key) {
+        return _c(
+          "v-chip",
+          { key: key, staticClass: "grey lighten-2" },
+          [
+            _c("v-avatar", { staticClass: "teal" }, [
+              _vm._v(_vm._s(player.Name.charAt(0)))
+            ]),
+            _vm._v("\n        " + _vm._s(player.Name) + "\n    ")
+          ],
+          1
+        )
+      })
+    ],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-7e5cc400", esExports)
   }
 }
 

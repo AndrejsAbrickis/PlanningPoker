@@ -5,16 +5,22 @@
 
             <v-container fluid grid-list-sm>
                 <v-layout row wrap>
-                    <v-flex xs2 v-for="card in ['0', '1/2', '1', '2', '3', '5', '8', '10', '20', '40']" :key="card">
-                        <v-card class="purple white--text" @click="playCard(card)">
-                            <v-card-text>
-                                <h3>{{card}}</h3>
-                            </v-card-text>
-                        </v-card>
+                    <v-flex xs8>
+                        <v-layout row wrap>
+                            <v-flex xs4 sm3 md2 v-for="card in cards" :key="card.value">
+                                <v-card class="purple white--text" @click="playCard(card.value)">
+                                    <v-card-text>
+                                        <h3>{{ card.label }}</h3>
+                                    </v-card-text>
+                                </v-card>
+                            </v-flex>
+                        </v-layout>
+                    </v-flex>
+                    <v-flex xs4>
+                        <players-online :players="playersOnline" />
                     </v-flex>
                 </v-layout>
             </v-container>
-
 
             <div>
                 <h4>Cards</h4>
@@ -22,17 +28,12 @@
                     {{ messageItem.Message }}
                 </p>
             </div>
-            <div>
-                <v-chip v-for="(user, key) in playersOnline" :key="key" class="grey lighten-2">
-                    <v-avatar class="teal">{{ user.Name.charAt(0) }}</v-avatar>
-                    {{ user.Name }}
-                </v-chip>
-            </div>
+
         </div>
-        <v-container grid-list-xl text-xs-center v-if="!player.signedIn">
+        <v-container v-if="!player.signedIn">
             <v-layout row wrap>
-                <v-flex xs8 offset-xs2>
-                    <v-card class="grey lighten-4">
+                <v-flex xs12 sm10 offset-sm1 md6 offset-md3>
+                    <v-card dark class="grey lighten-4">
                         <v-card-text>
                             <v-text-field v-model="player.name" name="playerName" label="Enter your name here" id="playerName"></v-text-field>
                             <v-btn outline class="indigo--text" @click="join">Join</v-btn>
@@ -46,6 +47,7 @@
 
 <script>
 import { HubConnection } from '@aspnet/signalr-client';
+import PlayersOnline from '../Scripts/PlayersOnline.vue';
 
 const HUBS = {
     POKER: '/poker'
@@ -59,10 +61,29 @@ const HUB_EVENTS = {
     JoinUser: "JoinUser"
 }
 
+const CARDS = [
+    { value: 0, label: '0' },
+    { value: 0.5, label: '1/2' },
+    { value: 1, label: '1' },
+    { value: 2, label: '2' },
+    { value: 3, label: '3' },
+    { value: 5, label: '5' },
+    { value: 8, label: '8' },
+    { value: 13, label: '13' },
+    { value: 20, label: '20' },
+    { value: 40, label: '40' },
+    { value: 100, label: '80' },
+    { value: Infinity, label: '?' },
+];
+
 export default {
     name: 'app',
+    components: {
+        PlayersOnline
+    },
     data() {
         return {
+            cards: CARDS,
             pokerHub: '',
             message: '',
             messages: [],
@@ -126,6 +147,6 @@ export default {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
-    margin-top: 60px;
+    margin-top: 24px;
 }
 </style>
