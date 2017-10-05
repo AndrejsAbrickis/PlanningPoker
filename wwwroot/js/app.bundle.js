@@ -79,8 +79,8 @@ var util = __webpack_require__(7);
 util.inherits = __webpack_require__(2);
 /*</replacement>*/
 
-var Readable = __webpack_require__(19);
-var Writable = __webpack_require__(24);
+var Readable = __webpack_require__(20);
+var Writable = __webpack_require__(25);
 
 util.inherits(Duplex, Readable);
 
@@ -220,7 +220,7 @@ var LogLevel;
 
 var base64 = __webpack_require__(42)
 var ieee754 = __webpack_require__(43)
-var isArray = __webpack_require__(18)
+var isArray = __webpack_require__(19)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -2421,7 +2421,7 @@ var LoggerFactory;
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var DuplexStream = __webpack_require__(48)
-  , util         = __webpack_require__(14)
+  , util         = __webpack_require__(15)
 
 
 function BufferList (callback) {
@@ -2756,6 +2756,103 @@ function nextTick(fn, arg1, arg2, arg3) {
 
 /***/ }),
 /* 11 */
+/***/ (function(module, exports) {
+
+/* globals __VUE_SSR_CONTEXT__ */
+
+// this module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle
+
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier /* server only */
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = injectStyles
+  }
+
+  if (hook) {
+    var functional = options.functional
+    var existing = functional
+      ? options.render
+      : options.beforeCreate
+    if (!functional) {
+      // inject component registration as beforeCreate hook
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    } else {
+      // register for functioal component in vue file
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return existing(h, context)
+      }
+    }
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2771,8 +2868,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Transports_1 = __webpack_require__(12);
-const HttpClient_1 = __webpack_require__(16);
+const Transports_1 = __webpack_require__(13);
+const HttpClient_1 = __webpack_require__(17);
 const ILogger_1 = __webpack_require__(3);
 const Loggers_1 = __webpack_require__(8);
 class HttpConnection {
@@ -2905,7 +3002,7 @@ exports.HttpConnection = HttpConnection;
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2921,7 +3018,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const HttpError_1 = __webpack_require__(15);
+const HttpError_1 = __webpack_require__(16);
 const ILogger_1 = __webpack_require__(3);
 var TransportType;
 (function (TransportType) {
@@ -3137,7 +3234,7 @@ function send(httpClient, url, data) {
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3213,7 +3310,7 @@ var BinaryMessageFormat;
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -3806,7 +3903,7 @@ function hasOwnProperty(obj, prop) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0), __webpack_require__(6)))
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3824,7 +3921,7 @@ exports.HttpError = HttpError;
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3832,7 +3929,7 @@ exports.HttpError = HttpError;
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 Object.defineProperty(exports, "__esModule", { value: true });
-const HttpError_1 = __webpack_require__(15);
+const HttpError_1 = __webpack_require__(16);
 class HttpClient {
     get(url, headers) {
         return this.xhr("GET", url, headers);
@@ -3870,7 +3967,7 @@ exports.HttpClient = HttpClient;
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3878,7 +3975,7 @@ exports.HttpClient = HttpClient;
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 Object.defineProperty(exports, "__esModule", { value: true });
-const Formatters_1 = __webpack_require__(13);
+const Formatters_1 = __webpack_require__(14);
 class JsonHubProtocol {
     constructor() {
         this.name = "json";
@@ -3904,7 +4001,7 @@ exports.JsonHubProtocol = JsonHubProtocol;
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -3915,7 +4012,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3950,7 +4047,7 @@ var processNextTick = __webpack_require__(10);
 module.exports = Readable;
 
 /*<replacement>*/
-var isArray = __webpack_require__(18);
+var isArray = __webpack_require__(19);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -3960,7 +4057,7 @@ var Duplex;
 Readable.ReadableState = ReadableState;
 
 /*<replacement>*/
-var EE = __webpack_require__(20).EventEmitter;
+var EE = __webpack_require__(21).EventEmitter;
 
 var EElistenerCount = function (emitter, type) {
   return emitter.listeners(type).length;
@@ -3968,7 +4065,7 @@ var EElistenerCount = function (emitter, type) {
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream = __webpack_require__(21);
+var Stream = __webpack_require__(22);
 /*</replacement>*/
 
 // TODO(bmeurer): Change this back to const once hole checks are
@@ -4000,7 +4097,7 @@ if (debugUtil && debugUtil.debuglog) {
 /*</replacement>*/
 
 var BufferList = __webpack_require__(50);
-var destroyImpl = __webpack_require__(22);
+var destroyImpl = __webpack_require__(23);
 var StringDecoder;
 
 util.inherits(Readable, Stream);
@@ -4083,7 +4180,7 @@ function ReadableState(options, stream) {
   this.decoder = null;
   this.encoding = null;
   if (options.encoding) {
-    if (!StringDecoder) StringDecoder = __webpack_require__(23).StringDecoder;
+    if (!StringDecoder) StringDecoder = __webpack_require__(24).StringDecoder;
     this.decoder = new StringDecoder(options.encoding);
     this.encoding = options.encoding;
   }
@@ -4239,7 +4336,7 @@ Readable.prototype.isPaused = function () {
 
 // backwards compatibility.
 Readable.prototype.setEncoding = function (enc) {
-  if (!StringDecoder) StringDecoder = __webpack_require__(23).StringDecoder;
+  if (!StringDecoder) StringDecoder = __webpack_require__(24).StringDecoder;
   this._readableState.decoder = new StringDecoder(enc);
   this._readableState.encoding = enc;
   return this;
@@ -4929,7 +5026,7 @@ function indexOf(xs, x) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0), __webpack_require__(6)))
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -5237,14 +5334,14 @@ function isUndefined(arg) {
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(20).EventEmitter;
+module.exports = __webpack_require__(21).EventEmitter;
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5322,7 +5419,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -5549,7 +5646,7 @@ function base64DetectIncompleteChar(buffer) {
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5630,7 +5727,7 @@ var internalUtil = {
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream = __webpack_require__(21);
+var Stream = __webpack_require__(22);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -5644,7 +5741,7 @@ function _isUint8Array(obj) {
 }
 /*</replacement>*/
 
-var destroyImpl = __webpack_require__(22);
+var destroyImpl = __webpack_require__(23);
 
 util.inherits(Writable, Stream);
 
@@ -6220,7 +6317,7 @@ Writable.prototype._destroy = function (err, cb) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(51).setImmediate, __webpack_require__(0)))
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6440,16 +6537,16 @@ function done(stream, er, data) {
 }
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuetify__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuetify__ = __webpack_require__(29);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuetify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vuetify__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__App_vue__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__App_vue__ = __webpack_require__(30);
 
 
 
@@ -6465,7 +6562,7 @@ new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
 });
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/*!
@@ -16655,7 +16752,7 @@ return Vue$3;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -31889,18 +31986,18 @@ function unbind(el) {
 //# sourceMappingURL=vuetify.js.map
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(36);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_489acb3c_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(59);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_489acb3c_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(65);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(30)
+  __webpack_require__(31)
 }
-var normalizeComponent = __webpack_require__(35)
+var normalizeComponent = __webpack_require__(11)
 /* script */
 
 /* template */
@@ -31942,17 +32039,17 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(31);
+var content = __webpack_require__(32);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(33)("21bc9704", content, false);
+var update = __webpack_require__(34)("21bc9704", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -31968,10 +32065,10 @@ if(false) {
 }
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(32)(undefined);
+exports = module.exports = __webpack_require__(33)(undefined);
 // imports
 
 
@@ -31982,7 +32079,7 @@ exports.push([module.i, "\n#app {\n    font-family: 'Avenir', Helvetica, Arial, 
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports) {
 
 /*
@@ -32064,7 +32161,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -32083,7 +32180,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(34)
+var listToStyles = __webpack_require__(35)
 
 /*
 type StyleObject = {
@@ -32285,7 +32382,7 @@ function applyToTag (styleElement, obj) {
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports) {
 
 /**
@@ -32318,110 +32415,15 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 35 */
-/***/ (function(module, exports) {
-
-/* globals __VUE_SSR_CONTEXT__ */
-
-// this module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle
-
-module.exports = function normalizeComponent (
-  rawScriptExports,
-  compiledTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier /* server only */
-) {
-  var esModule
-  var scriptExports = rawScriptExports = rawScriptExports || {}
-
-  // ES6 modules interop
-  var type = typeof rawScriptExports.default
-  if (type === 'object' || type === 'function') {
-    esModule = rawScriptExports
-    scriptExports = rawScriptExports.default
-  }
-
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // render functions
-  if (compiledTemplate) {
-    options.render = compiledTemplate.render
-    options.staticRenderFns = compiledTemplate.staticRenderFns
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = injectStyles
-  }
-
-  if (hook) {
-    var functional = options.functional
-    var existing = functional
-      ? options.render
-      : options.beforeCreate
-    if (!functional) {
-      // inject component registration as beforeCreate hook
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    } else {
-      // register for functioal component in vue file
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return existing(h, context)
-      }
-    }
-  }
-
-  return {
-    esModule: esModule,
-    exports: scriptExports,
-    options: options
-  }
-}
-
-
-/***/ }),
 /* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__aspnet_signalr_client__ = __webpack_require__(37);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__aspnet_signalr_client___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__aspnet_signalr_client__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Scripts_PlayersOnline_vue__ = __webpack_require__(60);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Scripts_Login_vue__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Scripts_PlayersOnline_vue__ = __webpack_require__(59);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Scripts_CardsDeck_vue__ = __webpack_require__(66);
 //
 //
 //
@@ -32450,25 +32452,8 @@ module.exports = function normalizeComponent (
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+
 
 
 
@@ -32480,27 +32465,26 @@ const HUBS = {
 const HUB_EVENTS = {
     Send: "Send",
     UsersJoined: "UsersJoined",
-    UsersLeft: "UsersLeft",
-    SetUsersOnline: "SetUsersOnline",
+    Disconnected: "Disconnected",
+    Connected: "Connected",
     JoinUser: "JoinUser"
 };
-
-const CARDS = [{ value: 0, label: '0' }, { value: 0.5, label: '1/2' }, { value: 1, label: '1' }, { value: 2, label: '2' }, { value: 3, label: '3' }, { value: 5, label: '5' }, { value: 8, label: '8' }, { value: 13, label: '13' }, { value: 20, label: '20' }, { value: 40, label: '40' }, { value: 100, label: '80' }, { value: Infinity, label: '?' }];
 
 /* harmony default export */ __webpack_exports__["a"] = ({
     name: 'app',
     components: {
-        PlayersOnline: __WEBPACK_IMPORTED_MODULE_1__Scripts_PlayersOnline_vue__["a" /* default */]
+        Login: __WEBPACK_IMPORTED_MODULE_1__Scripts_Login_vue__["a" /* default */],
+        PlayersOnline: __WEBPACK_IMPORTED_MODULE_2__Scripts_PlayersOnline_vue__["a" /* default */],
+        CardsDeck: __WEBPACK_IMPORTED_MODULE_3__Scripts_CardsDeck_vue__["a" /* default */]
     },
     data() {
         return {
-            cards: CARDS,
+            joined: false,
             pokerHub: '',
             message: '',
             messages: [],
             player: {
-                name: '',
-                signedIn: false
+                name: ''
             },
             playersOnline: {}
         };
@@ -32508,29 +32492,28 @@ const CARDS = [{ value: 0, label: '0' }, { value: 0.5, label: '1/2' }, { value: 
     mounted() {
         this.pokerHub = new __WEBPACK_IMPORTED_MODULE_0__aspnet_signalr_client__["HubConnection"](HUBS.POKER);
 
-        this.pokerHub.on(HUB_EVENTS.Send, message => this.handleSend(message));
+        this.pokerHub.on(HUB_EVENTS.Send, this.handleSend);
+        this.pokerHub.on(HUB_EVENTS.Connected, this.handleConnected);
+        this.pokerHub.on(HUB_EVENTS.Disconnected, this.handleDisconnected);
+        this.pokerHub.on(HUB_EVENTS.JoinUser, this.handleUserJoined);
 
-        this.pokerHub.on(HUB_EVENTS.UsersJoined, data => {
-            console.log(`Joined`);
-            console.log(data);
-        });
-
-        this.pokerHub.on(HUB_EVENTS.UsersLeft, data => {
-            console.log(`Left`);
-            console.log(data);
-        });
-
-        this.pokerHub.on(HUB_EVENTS.SetUsersOnline, data => {
-            console.log(`SetUsersOnline`);
-            console.log(data);
-        });
-
-        this.pokerHub.on(HUB_EVENTS.JoinUser, message => this.handleUserJoined(message));
         this.pokerHub.start();
     },
     methods: {
-        join() {
-            this.pokerHub.invoke(HUB_EVENTS.JoinUser, this.player.name);
+        handleConnected(usersOnline) {
+            usersOnline.forEach(user => {
+                this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name || '' });
+            });
+        },
+        handleDisconnected(usersOnline) {
+            this.playersOnline = {};
+
+            usersOnline.forEach(user => {
+                this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name || '' });
+            });
+        },
+        join(playerName) {
+            this.pokerHub.invoke(HUB_EVENTS.JoinUser, playerName);
         },
         playCard(card) {
             this.pokerHub.invoke(HUB_EVENTS.Send, card);
@@ -32538,7 +32521,7 @@ const CARDS = [{ value: 0, label: '0' }, { value: 0.5, label: '1/2' }, { value: 
         handleUserJoined(user) {
             console.log(`handleUserJoined`);
             console.log(user);
-            this.player.signedIn = true;
+            this.joined = true;
             this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name });
         },
         handleSend(message) {
@@ -32562,10 +32545,10 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(11));
-__export(__webpack_require__(16));
-__export(__webpack_require__(38));
 __export(__webpack_require__(12));
+__export(__webpack_require__(17));
+__export(__webpack_require__(38));
+__export(__webpack_require__(13));
 __export(__webpack_require__(8));
 __export(__webpack_require__(41));
 
@@ -32587,18 +32570,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const HttpConnection_1 = __webpack_require__(11);
+const HttpConnection_1 = __webpack_require__(12);
 const Observable_1 = __webpack_require__(39);
-const JsonHubProtocol_1 = __webpack_require__(17);
-const Formatters_1 = __webpack_require__(13);
+const JsonHubProtocol_1 = __webpack_require__(18);
+const Formatters_1 = __webpack_require__(14);
 const Base64EncodedHubProtocol_1 = __webpack_require__(40);
 const ILogger_1 = __webpack_require__(3);
 const Loggers_1 = __webpack_require__(8);
-var Transports_1 = __webpack_require__(12);
+var Transports_1 = __webpack_require__(13);
 exports.TransportType = Transports_1.TransportType;
-var HttpConnection_2 = __webpack_require__(11);
+var HttpConnection_2 = __webpack_require__(12);
 exports.HttpConnection = HttpConnection_2.HttpConnection;
-var JsonHubProtocol_2 = __webpack_require__(17);
+var JsonHubProtocol_2 = __webpack_require__(18);
 exports.JsonHubProtocol = JsonHubProtocol_2.JsonHubProtocol;
 var ILogger_2 = __webpack_require__(3);
 exports.LogLevel = ILogger_2.LogLevel;
@@ -32875,7 +32858,7 @@ exports.Base64EncodedHubProtocol = Base64EncodedHubProtocol;
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 Object.defineProperty(exports, "__esModule", { value: true });
-const Formatters_1 = __webpack_require__(13);
+const Formatters_1 = __webpack_require__(14);
 const msgpack5 = __webpack_require__(44);
 class MessagePackHubProtocol {
     constructor() {
@@ -33353,7 +33336,7 @@ function isBuffer(b) {
 // ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var util = __webpack_require__(14);
+var util = __webpack_require__(15);
 var hasOwn = Object.prototype.hasOwnProperty;
 var pSlice = Array.prototype.slice;
 var functionsHaveNames = (function () {
@@ -34333,12 +34316,12 @@ module.exports.encoder = Encoder
 /* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(19);
+exports = module.exports = __webpack_require__(20);
 exports.Stream = exports;
 exports.Readable = exports;
-exports.Writable = __webpack_require__(24);
+exports.Writable = __webpack_require__(25);
 exports.Duplex = __webpack_require__(1);
-exports.Transform = __webpack_require__(25);
+exports.Transform = __webpack_require__(26);
 exports.PassThrough = __webpack_require__(56);
 
 
@@ -34376,7 +34359,7 @@ exports.PassThrough = __webpack_require__(56);
 
 module.exports = PassThrough;
 
-var Transform = __webpack_require__(25);
+var Transform = __webpack_require__(26);
 
 /*<replacement>*/
 var util = __webpack_require__(7);
@@ -34400,7 +34383,7 @@ PassThrough.prototype._transform = function (chunk, encoding, cb) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var bl = __webpack_require__(9)
-var util = __webpack_require__(14)
+var util = __webpack_require__(15)
 
 function IncompleteBufferError (message) {
   Error.call(this) // super constructor
@@ -35095,199 +35078,10 @@ function encodeFloat (obj, forceFloat64) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { attrs: { id: "app" } },
-    [
-      _vm.player.signedIn
-        ? _c(
-            "div",
-            [
-              _c("h2", [_vm._v("Planning Poker Vue APP")]),
-              _vm._v(" "),
-              _c(
-                "v-container",
-                { attrs: { fluid: "", "grid-list-sm": "" } },
-                [
-                  _c(
-                    "v-layout",
-                    { attrs: { row: "", wrap: "" } },
-                    [
-                      _c(
-                        "v-flex",
-                        { attrs: { xs8: "" } },
-                        [
-                          _c(
-                            "v-layout",
-                            { attrs: { row: "", wrap: "" } },
-                            _vm._l(_vm.cards, function(card) {
-                              return _c(
-                                "v-flex",
-                                {
-                                  key: card.value,
-                                  attrs: { xs4: "", sm3: "", md2: "" }
-                                },
-                                [
-                                  _c(
-                                    "v-card",
-                                    {
-                                      staticClass: "purple white--text",
-                                      on: {
-                                        click: function($event) {
-                                          _vm.playCard(card.value)
-                                        }
-                                      }
-                                    },
-                                    [
-                                      _c("v-card-text", [
-                                        _c("h3", [_vm._v(_vm._s(card.label))])
-                                      ])
-                                    ],
-                                    1
-                                  )
-                                ],
-                                1
-                              )
-                            })
-                          )
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-flex",
-                        { attrs: { xs4: "" } },
-                        [
-                          _c("players-online", {
-                            attrs: { players: _vm.playersOnline }
-                          })
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
-                [
-                  _c("h4", [_vm._v("Cards")]),
-                  _vm._v(" "),
-                  _vm._l(_vm.messages, function(messageItem) {
-                    return _c("p", { key: messageItem.ConnectionId }, [
-                      _vm._v(
-                        "\n                " +
-                          _vm._s(messageItem.Message) +
-                          "\n            "
-                      )
-                    ])
-                  })
-                ],
-                2
-              )
-            ],
-            1
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      !_vm.player.signedIn
-        ? _c(
-            "v-container",
-            [
-              _c(
-                "v-layout",
-                { attrs: { row: "", wrap: "" } },
-                [
-                  _c(
-                    "v-flex",
-                    {
-                      attrs: {
-                        xs12: "",
-                        sm10: "",
-                        "offset-sm1": "",
-                        md6: "",
-                        "offset-md3": ""
-                      }
-                    },
-                    [
-                      _c(
-                        "v-card",
-                        { staticClass: "grey lighten-4", attrs: { dark: "" } },
-                        [
-                          _c(
-                            "v-card-text",
-                            [
-                              _c("v-text-field", {
-                                attrs: {
-                                  name: "playerName",
-                                  label: "Enter your name here",
-                                  id: "playerName"
-                                },
-                                model: {
-                                  value: _vm.player.name,
-                                  callback: function($$v) {
-                                    _vm.player.name = $$v
-                                  },
-                                  expression: "player.name"
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c(
-                                "v-btn",
-                                {
-                                  staticClass: "indigo--text",
-                                  attrs: { outline: "" },
-                                  on: { click: _vm.join }
-                                },
-                                [_vm._v("Join")]
-                              )
-                            ],
-                            1
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          )
-        : _vm._e()
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-var esExports = { render: render, staticRenderFns: staticRenderFns }
-/* harmony default export */ __webpack_exports__["a"] = (esExports);
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-489acb3c", esExports)
-  }
-}
-
-/***/ }),
-/* 60 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PlayersOnline_vue__ = __webpack_require__(61);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7e5cc400_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_PlayersOnline_vue__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PlayersOnline_vue__ = __webpack_require__(60);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7e5cc400_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_PlayersOnline_vue__ = __webpack_require__(61);
 var disposed = false
-var normalizeComponent = __webpack_require__(35)
+var normalizeComponent = __webpack_require__(11)
 /* script */
 
 /* template */
@@ -35329,7 +35123,7 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 61 */
+/* 60 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -35350,7 +35144,7 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 62 */
+/* 61 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -35391,5 +35185,394 @@ if (false) {
   }
 }
 
+/***/ }),
+/* 62 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Login_vue__ = __webpack_require__(63);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0c29a7c4_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_Login_vue__ = __webpack_require__(64);
+var disposed = false
+var normalizeComponent = __webpack_require__(11)
+/* script */
+
+/* template */
+
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Login_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0c29a7c4_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_Login_vue__["a" /* default */],
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "Login.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] Login.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0c29a7c4", Component.options)
+  } else {
+    hotAPI.reload("data-v-0c29a7c4", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
+
+
+/***/ }),
+/* 63 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    data() {
+        return {
+            playerName: ''
+        };
+    },
+    props: {
+        join: Function
+    }
+});
+
+/***/ }),
+/* 64 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "v-container",
+    [
+      _c(
+        "v-layout",
+        { attrs: { row: "", wrap: "" } },
+        [
+          _c(
+            "v-flex",
+            {
+              attrs: {
+                xs12: "",
+                sm10: "",
+                "offset-sm1": "",
+                md6: "",
+                "offset-md3": ""
+              }
+            },
+            [
+              _c(
+                "v-card",
+                { staticClass: "grey lighten-4", attrs: { dark: "" } },
+                [
+                  _c(
+                    "v-card-text",
+                    [
+                      _c("v-text-field", {
+                        attrs: {
+                          name: "playerName",
+                          label: "Enter your name here",
+                          id: "playerName"
+                        },
+                        model: {
+                          value: _vm.playerName,
+                          callback: function($$v) {
+                            _vm.playerName = $$v
+                          },
+                          expression: "playerName"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          staticClass: "indigo--text",
+                          attrs: { outline: "" },
+                          on: {
+                            click: function($event) {
+                              _vm.join(_vm.playerName)
+                            }
+                          }
+                        },
+                        [_vm._v("Join")]
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-0c29a7c4", esExports)
+  }
+}
+
+/***/ }),
+/* 65 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { attrs: { id: "app" } },
+    [
+      _vm.joined
+        ? _c(
+            "div",
+            [
+              _c("h2", [_vm._v("Planning Poker Vue APP")]),
+              _vm._v(" "),
+              _c(
+                "v-container",
+                { attrs: { fluid: "", "grid-list-md": "" } },
+                [
+                  _c(
+                    "v-layout",
+                    { attrs: { row: "", wrap: "" } },
+                    [
+                      _c(
+                        "v-flex",
+                        { attrs: { xs6: "", "offset-xs1": "" } },
+                        [
+                          _c("cards-deck", {
+                            attrs: { playCard: _vm.playCard }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-flex",
+                        { attrs: { xs3: "", "offset-xs1": "" } },
+                        [
+                          _c("players-online", {
+                            attrs: { players: _vm.playersOnline }
+                          })
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                [
+                  _c("h4", [_vm._v("Cards")]),
+                  _vm._v(" "),
+                  _vm._l(_vm.messages, function(messageItem) {
+                    return _c("p", { key: messageItem.ConnectionId }, [
+                      _vm._v(
+                        "\n                " +
+                          _vm._s(messageItem.Message) +
+                          "\n            "
+                      )
+                    ])
+                  })
+                ],
+                2
+              )
+            ],
+            1
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      !_vm.joined ? _c("login", { attrs: { join: _vm.join } }) : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-489acb3c", esExports)
+  }
+}
+
+/***/ }),
+/* 66 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CardsDeck_vue__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0ef47407_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_CardsDeck_vue__ = __webpack_require__(68);
+var disposed = false
+var normalizeComponent = __webpack_require__(11)
+/* script */
+
+/* template */
+
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CardsDeck_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0ef47407_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_CardsDeck_vue__["a" /* default */],
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "CardsDeck.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] CardsDeck.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0ef47407", Component.options)
+  } else {
+    hotAPI.reload("data-v-0ef47407", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
+
+
+/***/ }),
+/* 67 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+const CARDS = [{ value: 0, label: '0' }, { value: 0.5, label: '1/2' }, { value: 1, label: '1' }, { value: 2, label: '2' }, { value: 3, label: '3' }, { value: 5, label: '5' }, { value: 8, label: '8' }, { value: 13, label: '13' }, { value: 20, label: '20' }, { value: 40, label: '40' }, { value: 80, label: '80' }, { value: Infinity, label: '?' }];
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    data() {
+        return {
+            cards: CARDS
+        };
+    },
+    props: {
+        playCard: Function
+    }
+});
+
+/***/ }),
+/* 68 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "v-layout",
+    { attrs: { row: "", wrap: "" } },
+    _vm._l(_vm.cards, function(card) {
+      return _c(
+        "v-flex",
+        { key: card.value, attrs: { xs4: "", sm3: "", md2: "" } },
+        [
+          _c(
+            "v-card",
+            {
+              staticClass: "purple white--text",
+              on: {
+                click: function($event) {
+                  _vm.playCard(card.value)
+                }
+              }
+            },
+            [_c("v-card-text", [_c("h3", [_vm._v(_vm._s(card.label))])])],
+            1
+          )
+        ],
+        1
+      )
+    })
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-0ef47407", esExports)
+  }
+}
+
 /***/ })
-],[26]);
+],[27]);

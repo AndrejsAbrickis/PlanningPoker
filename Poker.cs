@@ -12,7 +12,7 @@ namespace signalR_demo
 
         public override async Task OnConnectedAsync()
         {
-            await Clients.Client(Context.ConnectionId).InvokeAsync(HubEvents.SetUsersOnline, await GetUsersOnline());
+            await Clients.Client(Context.ConnectionId).InvokeAsync(HubEvents.Connected, await GetUsersOnline());
 
             await base.OnConnectedAsync();
         }
@@ -22,14 +22,15 @@ namespace signalR_demo
             return Clients.Client(Context.ConnectionId).InvokeAsync(HubEvents.UsersJoined, users);
         }
 
-        public override Task OnUsersLeft(UserDetails[] users)
+        public override async Task OnUsersLeft(UserDetails[] users)
         {
-            return Clients.Client(Context.ConnectionId).InvokeAsync(HubEvents.UsersLeft, users);
+            await Clients.Client(Context.ConnectionId).InvokeAsync(HubEvents.Disconnected, await GetUsersOnline());
+
+            await base.OnUsersLeft(users);
         }
 
         public async Task Send(string message)
         {
-            //var allUsersOnline = await _userTracker.UsersOnline();
             var pokerMessage = new PokerMessage(Context.Connection.ConnectionId, message);
             await Clients.All.InvokeAsync(HubEvents.Send, pokerMessage);
         }
@@ -47,8 +48,8 @@ namespace signalR_demo
     {
         public const string Send = "Send";
         public const string UsersJoined = "UsersJoined";
-        public const string UsersLeft = "UsersLeft";
-        public const string SetUsersOnline = "SetUsersOnline";
+        public const string Disconnected = "Disconnected";
+        public const string Connected = "Connected";
         public const string JoinUser = "JoinUser";
     }
 
