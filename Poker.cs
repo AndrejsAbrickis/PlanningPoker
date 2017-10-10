@@ -42,15 +42,27 @@ namespace signalR_demo
 
             await Clients.All.InvokeAsync(HubEvents.JoinUser, userDetails);
         }
+
+        public async Task NewGame()
+        {
+            await Clients.All.InvokeAsync(HubEvents.NewGame);
+        }
+        
+        public async Task ShowCards()
+        {
+            await Clients.All.InvokeAsync(HubEvents.ShowCards);
+        }
     }
 
     public class HubEvents
     {
-        public const string Send = "Send";
-        public const string UsersJoined = "UsersJoined";
-        public const string Disconnected = "Disconnected";
-        public const string Connected = "Connected";
-        public const string JoinUser = "JoinUser";
+        internal const string Send = "Send";
+        internal const string UsersJoined = "UsersJoined";
+        internal const string Disconnected = "Disconnected";
+        internal const string Connected = "Connected";
+        internal const string JoinUser = "JoinUser";
+        internal const string NewGame = "NewGame";
+        internal const string ShowCards = "ShowCards";
     }
 
     public class PokerMessage

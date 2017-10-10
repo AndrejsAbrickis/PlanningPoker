@@ -7,27 +7,40 @@
                 <v-layout row wrap>
                     <v-flex xs6 offset-xs1>
                         <cards-deck :playCard="playCard" />
+                        <v-layout row wrap>
+                            <v-flex xs12 v-if="messages.length > 0">
+                                <h3>Played cards</h3>
+                            </v-flex>
+                            <v-flex xs4 v-for="messageItem in messages" :key="messageItem.ConnectionId">
+                                <v-card class="lime lighten-3" @click="vote(card.value)">
+                                    <v-card-text>
+                                        {{ playersOnline[messageItem.ConnectionId].Name }}
+                                        <h4 v-show="isCardsRevealed">{{ messageItem.Message }}</h4>
+                                    </v-card-text>
+                                </v-card>
+                            </v-flex>
+                        </v-layout>
                     </v-flex>
                     <v-flex xs3 offset-xs1>
                         <players-online :players="playersOnline" />
                     </v-flex>
                 </v-layout>
+                <v-layout row wrap>
+                    <v-flex xs10 offset-xs-1>
+                        <v-btn color="warning" dark @click="showCards()" v-if="!isCardsRevealed && messages.length > 0">Show cards</v-btn>
+                        <v-btn color="warning" dark @click="newGame()" v-if="isCardsRevealed">New game</v-btn>
+                    </v-flex>
+                </v-layout>
             </v-container>
-
-            <div>
-                <h4>Cards</h4>
-                <p v-for="messageItem in messages" :key="messageItem.ConnectionId">
-                    {{ messageItem.Message }}
-                </p>
-            </div>
-
         </div>
+
         <login v-if="!joined" :join="join" />
     </div>
 </template>
 
 <script>
 import { HubConnection } from '@aspnet/signalr-client';
+import EventBus, { Events } from './EventBus';
 import Login from '../Scripts/Login.vue';
 import PlayersOnline from '../Scripts/PlayersOnline.vue';
 import CardsDeck from '../Scripts/CardsDeck.vue';
@@ -42,7 +55,9 @@ const HUB_EVENTS = {
     UsersJoined: "UsersJoined",
     Disconnected: "Disconnected",
     Connected: "Connected",
-    JoinUser: "JoinUser"
+    JoinUser: "JoinUser",
+    NewGame: 'NewGame',
+    ShowCards: 'ShowCards',
 }
 
 export default {
@@ -54,14 +69,14 @@ export default {
     },
     data() {
         return {
-            joined: false,
             pokerHub: '',
-            message: '',
+            joined: false,
             messages: [],
             player: {
                 name: '',
             },
-            playersOnline: {}
+            playersOnline: {},
+            isCardsRevealed: false,
         };
     },
     mounted() {
@@ -71,6 +86,8 @@ export default {
         this.pokerHub.on(HUB_EVENTS.Connected, this.handleConnected);
         this.pokerHub.on(HUB_EVENTS.Disconnected, this.handleDisconnected);
         this.pokerHub.on(HUB_EVENTS.JoinUser, this.handleUserJoined);
+        this.pokerHub.on(HUB_EVENTS.NewGame, this.handleNewGame);
+        this.pokerHub.on(HUB_EVENTS.ShowCards, this.handleShowCards);
 
         this.pokerHub.start();
     },
@@ -105,6 +122,20 @@ export default {
             this.messages.push(message);
             this.message = '';
         },
+        newGame() {
+            this.pokerHub.invoke(HUB_EVENTS.NewGame);
+        },
+        handleNewGame() {
+            EventBus.$emit(Events.NEW_GAME_STARTED);
+            this.messages = [];
+            this.isCardsRevealed = false;
+        },
+        showCards() {
+            this.pokerHub.invoke(HUB_EVENTS.ShowCards);
+        },
+        handleShowCards() {
+            this.isCardsRevealed = true;
+        }
     }
 };
 </script>
