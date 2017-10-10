@@ -1,5 +1,5 @@
 {
-  "license": "UNLICENSED",
+  "license": "MIT",
   "devDependencies": {
     "@aspnet/signalr-client": "^1.0.0-alpha1-final",
     "babel-core": "^6.26.0",
