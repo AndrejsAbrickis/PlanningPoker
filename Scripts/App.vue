@@ -2,6 +2,7 @@
     <div id="app">
         <div v-if="joined">
             <h2>Planning Poker Vue APP</h2>
+            <p>GroupId: {{ player.GroupId }}</p>
 
             <v-container fluid grid-list-md>
                 <v-layout row wrap>
@@ -87,7 +88,6 @@ export default {
         this.pokerHub.on(HUB_EVENTS.Disconnected, this.handleDisconnected);
         this.pokerHub.on(HUB_EVENTS.UpdateUser, this.handleUpdateUser);
         this.pokerHub.on(HUB_EVENTS.Send, this.handleSend);
-        // this.pokerHub.on(HUB_EVENTS.JoinUser, this.handleUserJoined);
         this.pokerHub.on(HUB_EVENTS.UsersJoined, this.handleUserJoined);
         this.pokerHub.on(HUB_EVENTS.NewGame, this.handleNewGame);
         this.pokerHub.on(HUB_EVENTS.ShowCards, this.handleShowCards);

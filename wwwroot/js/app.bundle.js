@@ -32485,6 +32485,7 @@ module.exports = function listToStyles (parentId, list) {
 //
 //
 //
+//
 
 
 
@@ -32533,7 +32534,6 @@ const HUB_EVENTS = {
         this.pokerHub.on(HUB_EVENTS.Disconnected, this.handleDisconnected);
         this.pokerHub.on(HUB_EVENTS.UpdateUser, this.handleUpdateUser);
         this.pokerHub.on(HUB_EVENTS.Send, this.handleSend);
-        // this.pokerHub.on(HUB_EVENTS.JoinUser, this.handleUserJoined);
         this.pokerHub.on(HUB_EVENTS.UsersJoined, this.handleUserJoined);
         this.pokerHub.on(HUB_EVENTS.NewGame, this.handleNewGame);
         this.pokerHub.on(HUB_EVENTS.ShowCards, this.handleShowCards);
@@ -35626,6 +35626,8 @@ var render = function() {
             "div",
             [
               _c("h2", [_vm._v("Planning Poker Vue APP")]),
+              _vm._v(" "),
+              _c("p", [_vm._v("GroupId: " + _vm._s(_vm.player.GroupId))]),
               _vm._v(" "),
               _c(
                 "v-container",
