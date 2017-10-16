@@ -17,7 +17,19 @@ namespace signalR_demo
         public event Action<UserDetails[]> UsersLeft;
 
         public Task<IEnumerable<UserDetails>> UsersOnline() => Task.FromResult(_usersOnline.Values.AsEnumerable());
-        
+
+        public Task<IEnumerable<UserDetails>> UsersOnline(string groupId)
+        {
+            return Task.FromResult(_usersOnline.Values.Where(u => u.GroupId == groupId).AsEnumerable());
+        }
+
+        public Task<UserDetails> GetUser(HubConnectionContext connection)
+        {
+            var user = _usersOnline.Values.FirstOrDefault( u => u.ConnectionId == connection.ConnectionId);
+
+            return Task.FromResult(user);
+        }
+
         public Task AddUser(HubConnectionContext connection, UserDetails userDetails)
         {
             _usersOnline.TryAdd(connection, userDetails);
@@ -28,7 +40,7 @@ namespace signalR_demo
 
         public Task UpdateUser(HubConnectionContext connection, UserDetails userDetails)
         {
-            _usersOnline.AddOrUpdate(connection, userDetails, (odlKey, oldValue) => userDetails);
+            _usersOnline.AddOrUpdate(connection, userDetails, (oldKey, oldValue) => userDetails);
 
             return Task.CompletedTask;
         }

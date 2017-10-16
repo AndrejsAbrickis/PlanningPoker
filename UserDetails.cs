@@ -2,13 +2,15 @@ namespace signalR_demo
 {
     public class UserDetails
     {
-        public UserDetails(string connectionId, string name)
+        public UserDetails(string connectionId, string name, string groupId)
         {
             ConnectionId = connectionId;
             Name = name;
+            GroupId = groupId;
         }
 
-        public string ConnectionId { get; }
-        public string Name { get; }
+        public string ConnectionId { get; set; }
+        public string Name { get; set; }
+        public string GroupId { get; set; }
     }
 }

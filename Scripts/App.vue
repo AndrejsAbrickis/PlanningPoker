@@ -34,7 +34,7 @@
             </v-container>
         </div>
 
-        <login v-if="!joined" :join="join" />
+        <login v-if="!joined" :join="joinGroup" :player="player" />
     </div>
 </template>
 
@@ -58,6 +58,9 @@ const HUB_EVENTS = {
     JoinUser: "JoinUser",
     NewGame: 'NewGame',
     ShowCards: 'ShowCards',
+    JoinGroup: "JoinGroup",
+    LeaveGroup: "LeaveGroup",
+    UpdateUser: "UpdateUser"
 }
 
 export default {
@@ -72,9 +75,7 @@ export default {
             pokerHub: '',
             joined: false,
             messages: [],
-            player: {
-                name: '',
-            },
+            player: {},
             playersOnline: {},
             isCardsRevealed: false,
         };
@@ -82,22 +83,30 @@ export default {
     mounted() {
         this.pokerHub = new HubConnection(HUBS.POKER);
 
-        this.pokerHub.on(HUB_EVENTS.Send, this.handleSend);
         this.pokerHub.on(HUB_EVENTS.Connected, this.handleConnected);
         this.pokerHub.on(HUB_EVENTS.Disconnected, this.handleDisconnected);
-        this.pokerHub.on(HUB_EVENTS.JoinUser, this.handleUserJoined);
+        this.pokerHub.on(HUB_EVENTS.UpdateUser, this.handleUpdateUser);
+        this.pokerHub.on(HUB_EVENTS.Send, this.handleSend);
+        // this.pokerHub.on(HUB_EVENTS.JoinUser, this.handleUserJoined);
+        this.pokerHub.on(HUB_EVENTS.UsersJoined, this.handleUserJoined);
         this.pokerHub.on(HUB_EVENTS.NewGame, this.handleNewGame);
         this.pokerHub.on(HUB_EVENTS.ShowCards, this.handleShowCards);
+        this.pokerHub.on(HUB_EVENTS.JoinGroup, this.handleJoinGroup);
+        this.pokerHub.on(HUB_EVENTS.LeaveGroup, this.handleLeaveGroup);
 
         this.pokerHub.start();
     },
     methods: {
         handleConnected(usersOnline) {
+            console.warn(HUB_EVENTS.Connected);
+            console.log(usersOnline);
             usersOnline.forEach(user => {
                 this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name || '' });
             })
         },
         handleDisconnected(usersOnline) {
+            console.warn(HUB_EVENTS.Disconnected);
+            console.log(HUB_EVENTS.Disconnected);
             this.playersOnline = {};
 
             usersOnline.forEach(user => {
@@ -111,13 +120,13 @@ export default {
             this.pokerHub.invoke(HUB_EVENTS.Send, card);
         },
         handleUserJoined(user) {
-            console.log(`handleUserJoined`);
+            console.warn(HUB_EVENTS.JoinUser);
             console.log(user);
             this.joined = true;
             this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name });
         },
         handleSend(message) {
-            console.log(`handleSend`);
+            console.warn(HUB_EVENTS.Send);
             console.log(message);
             this.messages.push(message);
             this.message = '';
@@ -126,6 +135,7 @@ export default {
             this.pokerHub.invoke(HUB_EVENTS.NewGame);
         },
         handleNewGame() {
+            console.warn(HUB_EVENTS.NewGame);
             EventBus.$emit(Events.NEW_GAME_STARTED);
             this.messages = [];
             this.isCardsRevealed = false;
@@ -134,7 +144,32 @@ export default {
             this.pokerHub.invoke(HUB_EVENTS.ShowCards);
         },
         handleShowCards() {
+            console.warn(HUB_EVENTS.ShowCards)
             this.isCardsRevealed = true;
+        },
+        joinGroup(playerName, groupId) {
+            const message = { playerName, groupId }
+            this.pokerHub.invoke(HUB_EVENTS.JoinGroup, message);
+        },
+        handleJoinGroup(usersOnline) {
+            console.warn(HUB_EVENTS.JoinGroup);
+            console.log(usersOnline);
+            // this.joined = true;
+            // this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name });
+            this.playersOnline = {};
+
+            usersOnline.forEach(user => {
+                this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name || '' });
+            })
+        },
+        handleLeaveGroup() {
+            console.warn(HUB_EVENTS.LeaveGroup);
+        },
+        handleUpdateUser(user) {
+            console.warn(HUB_EVENTS.UpdateUser);
+            console.log(user);
+            this.joined = true;
+            this.player = user;
         }
     }
 };

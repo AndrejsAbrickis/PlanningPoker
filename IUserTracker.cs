@@ -8,6 +8,8 @@ namespace signalR_demo
     public interface IUserTracker<out THub>
     {
         Task<IEnumerable<UserDetails>> UsersOnline();
+        Task<IEnumerable<UserDetails>> UsersOnline(string groupId);
+        Task<UserDetails> GetUser(HubConnectionContext connection);
         Task AddUser(HubConnectionContext connection, UserDetails userDetails);
         Task UpdateUser(HubConnectionContext connection, UserDetails userDetails);
         Task RemoveUser(HubConnectionContext connection);

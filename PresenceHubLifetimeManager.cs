@@ -52,7 +52,7 @@ namespace signalR_demo
         {
             await _wrappedHubLifetimeManager.OnConnectedAsync(connection);
             _connections.Add(connection);
-            await _userTracker.AddUser(connection, new UserDetails(connection.ConnectionId, connection.User.Identity.Name));
+            await _userTracker.AddUser(connection, new UserDetails(connection.ConnectionId, connection.User.Identity.Name, Guid.NewGuid().ToString()));
         }
 
         public override async Task OnDisconnectedAsync(HubConnectionContext connection)

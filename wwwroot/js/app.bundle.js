@@ -32503,7 +32503,10 @@ const HUB_EVENTS = {
     Connected: "Connected",
     JoinUser: "JoinUser",
     NewGame: 'NewGame',
-    ShowCards: 'ShowCards'
+    ShowCards: 'ShowCards',
+    JoinGroup: "JoinGroup",
+    LeaveGroup: "LeaveGroup",
+    UpdateUser: "UpdateUser"
 };
 
 /* harmony default export */ __webpack_exports__["a"] = ({
@@ -32518,9 +32521,7 @@ const HUB_EVENTS = {
             pokerHub: '',
             joined: false,
             messages: [],
-            player: {
-                name: ''
-            },
+            player: {},
             playersOnline: {},
             isCardsRevealed: false
         };
@@ -32528,22 +32529,30 @@ const HUB_EVENTS = {
     mounted() {
         this.pokerHub = new __WEBPACK_IMPORTED_MODULE_0__aspnet_signalr_client__["HubConnection"](HUBS.POKER);
 
-        this.pokerHub.on(HUB_EVENTS.Send, this.handleSend);
         this.pokerHub.on(HUB_EVENTS.Connected, this.handleConnected);
         this.pokerHub.on(HUB_EVENTS.Disconnected, this.handleDisconnected);
-        this.pokerHub.on(HUB_EVENTS.JoinUser, this.handleUserJoined);
+        this.pokerHub.on(HUB_EVENTS.UpdateUser, this.handleUpdateUser);
+        this.pokerHub.on(HUB_EVENTS.Send, this.handleSend);
+        // this.pokerHub.on(HUB_EVENTS.JoinUser, this.handleUserJoined);
+        this.pokerHub.on(HUB_EVENTS.UsersJoined, this.handleUserJoined);
         this.pokerHub.on(HUB_EVENTS.NewGame, this.handleNewGame);
         this.pokerHub.on(HUB_EVENTS.ShowCards, this.handleShowCards);
+        this.pokerHub.on(HUB_EVENTS.JoinGroup, this.handleJoinGroup);
+        this.pokerHub.on(HUB_EVENTS.LeaveGroup, this.handleLeaveGroup);
 
         this.pokerHub.start();
     },
     methods: {
         handleConnected(usersOnline) {
+            console.warn(HUB_EVENTS.Connected);
+            console.log(usersOnline);
             usersOnline.forEach(user => {
                 this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name || '' });
             });
         },
         handleDisconnected(usersOnline) {
+            console.warn(HUB_EVENTS.Disconnected);
+            console.log(HUB_EVENTS.Disconnected);
             this.playersOnline = {};
 
             usersOnline.forEach(user => {
@@ -32557,13 +32566,13 @@ const HUB_EVENTS = {
             this.pokerHub.invoke(HUB_EVENTS.Send, card);
         },
         handleUserJoined(user) {
-            console.log(`handleUserJoined`);
+            console.warn(HUB_EVENTS.JoinUser);
             console.log(user);
             this.joined = true;
             this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name });
         },
         handleSend(message) {
-            console.log(`handleSend`);
+            console.warn(HUB_EVENTS.Send);
             console.log(message);
             this.messages.push(message);
             this.message = '';
@@ -32572,6 +32581,7 @@ const HUB_EVENTS = {
             this.pokerHub.invoke(HUB_EVENTS.NewGame);
         },
         handleNewGame() {
+            console.warn(HUB_EVENTS.NewGame);
             __WEBPACK_IMPORTED_MODULE_1__EventBus__["b" /* default */].$emit(__WEBPACK_IMPORTED_MODULE_1__EventBus__["a" /* Events */].NEW_GAME_STARTED);
             this.messages = [];
             this.isCardsRevealed = false;
@@ -32580,7 +32590,32 @@ const HUB_EVENTS = {
             this.pokerHub.invoke(HUB_EVENTS.ShowCards);
         },
         handleShowCards() {
+            console.warn(HUB_EVENTS.ShowCards);
             this.isCardsRevealed = true;
+        },
+        joinGroup(playerName, groupId) {
+            const message = { playerName, groupId };
+            this.pokerHub.invoke(HUB_EVENTS.JoinGroup, message);
+        },
+        handleJoinGroup(usersOnline) {
+            console.warn(HUB_EVENTS.JoinGroup);
+            console.log(usersOnline);
+            // this.joined = true;
+            // this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name });
+            this.playersOnline = {};
+
+            usersOnline.forEach(user => {
+                this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name || '' });
+            });
+        },
+        handleLeaveGroup() {
+            console.warn(HUB_EVENTS.LeaveGroup);
+        },
+        handleUpdateUser(user) {
+            console.warn(HUB_EVENTS.UpdateUser);
+            console.log(user);
+            this.joined = true;
+            this.player = user;
         }
     }
 });
@@ -35193,15 +35228,18 @@ if (false) {(function () {
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["a"] = ({
     data() {
         return {
-            playerName: ''
+            playerName: '',
+            groupId: this.player.groupId
         };
     },
     props: {
-        join: Function
+        join: Function,
+        player: Object
     }
 });
 
@@ -35255,6 +35293,21 @@ var render = function() {
                         }
                       }),
                       _vm._v(" "),
+                      _c("v-text-field", {
+                        attrs: {
+                          name: "groupId",
+                          label: "GroupId",
+                          id: "groupId"
+                        },
+                        model: {
+                          value: _vm.groupId,
+                          callback: function($$v) {
+                            _vm.groupId = $$v
+                          },
+                          expression: "groupId"
+                        }
+                      }),
+                      _vm._v(" "),
                       _c(
                         "v-btn",
                         {
@@ -35262,7 +35315,7 @@ var render = function() {
                           attrs: { outline: "" },
                           on: {
                             click: function($event) {
-                              _vm.join(_vm.playerName)
+                              _vm.join(_vm.playerName, _vm.groupId)
                             }
                           }
                         },
@@ -35727,7 +35780,9 @@ var render = function() {
           )
         : _vm._e(),
       _vm._v(" "),
-      !_vm.joined ? _c("login", { attrs: { join: _vm.join } }) : _vm._e()
+      !_vm.joined
+        ? _c("login", { attrs: { join: _vm.joinGroup, player: _vm.player } })
+        : _vm._e()
     ],
     1
   )

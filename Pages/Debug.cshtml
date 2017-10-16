@@ -1,0 +1,21 @@
+@page
+@model DebugModel
+
+<p>Debug</p>
+@Model.Users.Count()
+
+<table>
+    <tr>
+        <th>ConnectionId</th>
+        <th>Name</th>
+        <th>GroupId</th>
+    </tr>
+@foreach (var user in Model.Users)
+{
+    <tr>
+        <td>@user.ConnectionId</td>
+        <td>@user.Name</td>
+        <td>@user.GroupId</td>
+    </tr>
+}
+</table>
