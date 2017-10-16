@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 
-namespace signalR_demo
+namespace signalR_vuejs_demo
 {
     public class HubWithPresence : Hub
     {

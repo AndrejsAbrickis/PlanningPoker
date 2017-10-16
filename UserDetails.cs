@@ -1,4 +1,4 @@
-namespace signalR_demo
+namespace signalR_vuejs_demo
 {
     public class UserDetails
     {

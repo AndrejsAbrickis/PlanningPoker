@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace signalR_demo
+namespace signalR_vuejs_demo
 {
     public class Startup
     {

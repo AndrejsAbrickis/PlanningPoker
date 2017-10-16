@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 
-namespace signalR_demo
+namespace signalR_vuejs_demo
 {
     public class Poker : HubWithPresence
     {
