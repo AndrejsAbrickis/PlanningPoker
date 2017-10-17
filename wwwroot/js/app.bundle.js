@@ -35229,17 +35229,28 @@ if (false) {(function () {
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["a"] = ({
     data() {
         return {
+            valid: false,
             playerName: '',
-            groupId: this.player.groupId
+            groupId: this.player.groupId,
+            playerNameRules: [v => !!v || 'Name is required']
         };
     },
     props: {
         join: Function,
         player: Object
+    },
+    methods: {
+        submit() {
+            if (this.$refs.loginForm.validate()) {
+                this.join(this.playerName, this.groupId);
+            }
+        }
     }
 });
 
@@ -35278,48 +35289,66 @@ var render = function() {
                   _c(
                     "v-card-text",
                     [
-                      _c("v-text-field", {
-                        attrs: {
-                          name: "playerName",
-                          label: "Enter your name here",
-                          id: "playerName"
-                        },
-                        model: {
-                          value: _vm.playerName,
-                          callback: function($$v) {
-                            _vm.playerName = $$v
-                          },
-                          expression: "playerName"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("v-text-field", {
-                        attrs: {
-                          name: "groupId",
-                          label: "GroupId",
-                          id: "groupId"
-                        },
-                        model: {
-                          value: _vm.groupId,
-                          callback: function($$v) {
-                            _vm.groupId = $$v
-                          },
-                          expression: "groupId"
-                        }
-                      }),
-                      _vm._v(" "),
                       _c(
-                        "v-btn",
+                        "v-form",
                         {
-                          staticClass: "indigo--text",
-                          attrs: { outline: "" },
-                          on: {
-                            click: function($event) {
-                              _vm.join(_vm.playerName, _vm.groupId)
-                            }
+                          ref: "loginForm",
+                          attrs: { "lazy-validation": "" },
+                          model: {
+                            value: _vm.valid,
+                            callback: function($$v) {
+                              _vm.valid = $$v
+                            },
+                            expression: "valid"
                           }
                         },
-                        [_vm._v("Join")]
+                        [
+                          _c("v-text-field", {
+                            attrs: {
+                              name: "playerName",
+                              label: "Enter your name here",
+                              id: "playerName",
+                              rules: _vm.playerNameRules
+                            },
+                            model: {
+                              value: _vm.playerName,
+                              callback: function($$v) {
+                                _vm.playerName = $$v
+                              },
+                              expression: "playerName"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("v-text-field", {
+                            attrs: {
+                              name: "groupId",
+                              label: "GroupId",
+                              id: "groupId"
+                            },
+                            model: {
+                              value: _vm.groupId,
+                              callback: function($$v) {
+                                _vm.groupId = $$v
+                              },
+                              expression: "groupId"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "v-btn",
+                            {
+                              staticClass: "indigo indigo--text",
+                              attrs: { outline: "", required: "" },
+                              on: {
+                                click: function($event) {
+                                  _vm.submit()
+                                }
+                              }
+                            },
+                            [_vm._v("Join")]
+                          )
+                        ],
+                        1
                       )
                     ],
                     1
