@@ -35559,6 +35559,9 @@ if (false) {(function () {
 //
 //
 //
+//
+//
+//
 
 
 
@@ -35601,28 +35604,35 @@ var render = function() {
     ? _c(
         "v-layout",
         { attrs: { row: "", wrap: "" } },
-        _vm._l(_vm.cards, function(card) {
-          return _c(
-            "v-flex",
-            { key: card.value, attrs: { xs4: "", sm3: "", md2: "" } },
-            [
-              _c(
-                "v-card",
-                {
-                  staticClass: "purple white--text",
-                  on: {
-                    click: function($event) {
-                      _vm.vote(card.value)
+        [
+          _c("v-flex", { attrs: { xs10: "", "offset-xs1": "" } }, [
+            _c("h3", [_vm._v("Your hand")])
+          ]),
+          _vm._v(" "),
+          _vm._l(_vm.cards, function(card) {
+            return _c(
+              "v-flex",
+              { key: card.value, attrs: { xs4: "", sm3: "", md2: "" } },
+              [
+                _c(
+                  "v-card",
+                  {
+                    staticClass: "purple white--text",
+                    on: {
+                      click: function($event) {
+                        _vm.vote(card.value)
+                      }
                     }
-                  }
-                },
-                [_c("v-card-text", [_c("h3", [_vm._v(_vm._s(card.label))])])],
-                1
-              )
-            ],
-            1
-          )
-        })
+                  },
+                  [_c("v-card-text", [_c("h3", [_vm._v(_vm._s(card.label))])])],
+                  1
+                )
+              ],
+              1
+            )
+          })
+        ],
+        2
       )
     : _vm._e()
 }
@@ -35668,7 +35678,18 @@ var render = function() {
                     [
                       _c(
                         "v-flex",
-                        { attrs: { xs6: "", "offset-xs1": "" } },
+                        { attrs: { xs10: "", "offset-xs1": "" } },
+                        [
+                          _c("players-online", {
+                            attrs: { players: _vm.playersOnline }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-flex",
+                        { attrs: { xs10: "", "offset-xs1": "" } },
                         [
                           _c("cards-deck", {
                             attrs: { playCard: _vm.playCard }
@@ -35742,17 +35763,6 @@ var render = function() {
                             ],
                             2
                           )
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-flex",
-                        { attrs: { xs3: "", "offset-xs1": "" } },
-                        [
-                          _c("players-online", {
-                            attrs: { players: _vm.playersOnline }
-                          })
                         ],
                         1
                       )

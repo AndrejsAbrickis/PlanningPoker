@@ -6,7 +6,10 @@
 
             <v-container fluid grid-list-md>
                 <v-layout row wrap>
-                    <v-flex xs6 offset-xs1>
+                    <v-flex xs10 offset-xs1>
+                        <players-online :players="playersOnline" />
+                    </v-flex>
+                    <v-flex xs10 offset-xs1>
                         <cards-deck :playCard="playCard" />
                         <v-layout row wrap>
                             <v-flex xs12 v-if="messages.length > 0">
@@ -21,9 +24,6 @@
                                 </v-card>
                             </v-flex>
                         </v-layout>
-                    </v-flex>
-                    <v-flex xs3 offset-xs1>
-                        <players-online :players="playersOnline" />
                     </v-flex>
                 </v-layout>
                 <v-layout row wrap>
