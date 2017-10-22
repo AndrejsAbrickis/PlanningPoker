@@ -1,7 +1,7 @@
 <template>
     <div id="app">
+        <h2>Planning Poker Vue APP</h2>
         <div v-if="joined">
-            <h2>Planning Poker Vue APP</h2>
             <p>GroupId: {{ player.GroupId }}</p>
 
             <v-container fluid grid-list-md>

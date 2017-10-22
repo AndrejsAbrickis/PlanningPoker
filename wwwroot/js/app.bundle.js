@@ -35660,12 +35660,12 @@ var render = function() {
     "div",
     { attrs: { id: "app" } },
     [
+      _c("h2", [_vm._v("Planning Poker Vue APP")]),
+      _vm._v(" "),
       _vm.joined
         ? _c(
             "div",
             [
-              _c("h2", [_vm._v("Planning Poker Vue APP")]),
-              _vm._v(" "),
               _c("p", [_vm._v("GroupId: " + _vm._s(_vm.player.GroupId))]),
               _vm._v(" "),
               _c(
