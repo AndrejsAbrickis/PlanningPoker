@@ -2,7 +2,7 @@
     <div id="app">
         <h2>Planning Poker Vue APP</h2>
         <div v-if="joined">
-            <p>GroupId: {{ player.GroupId }}</p>
+            <p>GroupId: {{ player.groupId }}</p>
 
             <v-container fluid grid-list-md>
                 <v-layout row wrap>
@@ -15,11 +15,11 @@
                             <v-flex xs12 v-if="messages.length > 0">
                                 <h3>Played cards</h3>
                             </v-flex>
-                            <v-flex xs4 v-for="messageItem in messages" :key="messageItem.ConnectionId">
+                            <v-flex xs4 v-for="messageItem in messages" :key="messageItem.connectionId">
                                 <v-card class="lime lighten-3" @click="vote(card.value)">
                                     <v-card-text>
-                                        {{ playersOnline[messageItem.ConnectionId].Name }}
-                                        <h4 v-show="isCardsRevealed">{{ messageItem.Message }}</h4>
+                                        {{ playersOnline[messageItem.connectionId].Name }}
+                                        <h4 v-show="isCardsRevealed">{{ messageItem.message }}</h4>
                                     </v-card-text>
                                 </v-card>
                             </v-flex>
@@ -49,7 +49,7 @@ import CardsDeck from '../Scripts/CardsDeck.vue';
 
 const HUBS = {
     POKER: '/poker'
-}
+};
 
 const HUB_EVENTS = {
     Send: "Send",
@@ -62,7 +62,7 @@ const HUB_EVENTS = {
     JoinGroup: "JoinGroup",
     LeaveGroup: "LeaveGroup",
     UpdateUser: "UpdateUser"
-}
+};
 
 export default {
     name: 'app',
@@ -101,7 +101,7 @@ export default {
             console.warn(HUB_EVENTS.Connected);
             console.log(usersOnline);
             usersOnline.forEach(user => {
-                this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name || '' });
+                this.$set(this.playersOnline, user.connectionId, { Name: user.name || '' });
             })
         },
         handleDisconnected(usersOnline) {
@@ -110,7 +110,7 @@ export default {
             this.playersOnline = {};
 
             usersOnline.forEach(user => {
-                this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name || '' });
+                this.$set(this.playersOnline, user.connectionId, { Name: user.name || '' });
             })
         },
         join(playerName) {
@@ -123,7 +123,7 @@ export default {
             console.warn(HUB_EVENTS.JoinUser);
             console.log(user);
             this.joined = true;
-            this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name });
+            this.$set(this.playersOnline, user.connectionId, { Name: user.name });
         },
         handleSend(message) {
             console.warn(HUB_EVENTS.Send);
@@ -144,22 +144,20 @@ export default {
             this.pokerHub.invoke(HUB_EVENTS.ShowCards);
         },
         handleShowCards() {
-            console.warn(HUB_EVENTS.ShowCards)
+            console.warn(HUB_EVENTS.ShowCards);
             this.isCardsRevealed = true;
         },
         joinGroup(playerName, groupId) {
-            const message = { playerName, groupId }
+            const message = { playerName, groupId };
             this.pokerHub.invoke(HUB_EVENTS.JoinGroup, message);
         },
         handleJoinGroup(usersOnline) {
             console.warn(HUB_EVENTS.JoinGroup);
             console.log(usersOnline);
-            // this.joined = true;
-            // this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name });
             this.playersOnline = {};
 
             usersOnline.forEach(user => {
-                this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name || '' });
+                this.$set(this.playersOnline, user.connectionId, { Name: user.name || '' });
             })
         },
         handleLeaveGroup() {

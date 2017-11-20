@@ -32563,7 +32563,7 @@ const HUB_EVENTS = {
             console.warn(HUB_EVENTS.Connected);
             console.log(usersOnline);
             usersOnline.forEach(user => {
-                this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name || '' });
+                this.$set(this.playersOnline, user.connectionId, { Name: user.name || '' });
             });
         },
         handleDisconnected(usersOnline) {
@@ -32572,7 +32572,7 @@ const HUB_EVENTS = {
             this.playersOnline = {};
 
             usersOnline.forEach(user => {
-                this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name || '' });
+                this.$set(this.playersOnline, user.connectionId, { Name: user.name || '' });
             });
         },
         join(playerName) {
@@ -32585,7 +32585,7 @@ const HUB_EVENTS = {
             console.warn(HUB_EVENTS.JoinUser);
             console.log(user);
             this.joined = true;
-            this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name });
+            this.$set(this.playersOnline, user.connectionId, { Name: user.name });
         },
         handleSend(message) {
             console.warn(HUB_EVENTS.Send);
@@ -32616,12 +32616,10 @@ const HUB_EVENTS = {
         handleJoinGroup(usersOnline) {
             console.warn(HUB_EVENTS.JoinGroup);
             console.log(usersOnline);
-            // this.joined = true;
-            // this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name });
             this.playersOnline = {};
 
             usersOnline.forEach(user => {
-                this.$set(this.playersOnline, user.ConnectionId, { Name: user.Name || '' });
+                this.$set(this.playersOnline, user.connectionId, { Name: user.name || '' });
             });
         },
         handleLeaveGroup() {
@@ -35703,7 +35701,7 @@ var render = function() {
         ? _c(
             "div",
             [
-              _c("p", [_vm._v("GroupId: " + _vm._s(_vm.player.GroupId))]),
+              _c("p", [_vm._v("GroupId: " + _vm._s(_vm.player.groupId))]),
               _vm._v(" "),
               _c(
                 "v-container",
@@ -35746,7 +35744,7 @@ var render = function() {
                                 return _c(
                                   "v-flex",
                                   {
-                                    key: messageItem.ConnectionId,
+                                    key: messageItem.connectionId,
                                     attrs: { xs4: "" }
                                   },
                                   [
@@ -35766,7 +35764,7 @@ var render = function() {
                                             "\n                                    " +
                                               _vm._s(
                                                 _vm.playersOnline[
-                                                  messageItem.ConnectionId
+                                                  messageItem.connectionId
                                                 ].Name
                                               ) +
                                               "\n                                    "
@@ -35785,7 +35783,7 @@ var render = function() {
                                             },
                                             [
                                               _vm._v(
-                                                _vm._s(messageItem.Message)
+                                                _vm._s(messageItem.message)
                                               )
                                             ]
                                           )
