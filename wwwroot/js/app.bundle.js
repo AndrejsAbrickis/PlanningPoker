@@ -2904,8 +2904,8 @@ class HttpConnection {
                 }
                 this.url += (this.url.indexOf("?") == -1 ? "?" : "&") + `id=${this.connectionId}`;
                 this.transport = this.createTransport(this.options.transport, negotiateResponse.availableTransports);
-                this.transport.onDataReceived = this.onDataReceived;
-                this.transport.onClosed = e => this.stopConnection(true, e);
+                this.transport.onreceive = this.onreceive;
+                this.transport.onclose = e => this.stopConnection(true, e);
                 let requestedTransferMode = this.features.transferMode === 2 /* Binary */
                     ? 2 /* Binary */
                     : 1 /* Text */;
@@ -2976,8 +2976,8 @@ class HttpConnection {
             this.transport = null;
         }
         this.connectionState = 3 /* Disconnected */;
-        if (raiseClosed && this.onClosed) {
-            this.onClosed(error);
+        if (raiseClosed && this.onclose) {
+            this.onclose(error);
         }
     }
     resolveUrl(url) {
@@ -2985,7 +2985,7 @@ class HttpConnection {
         if (url.lastIndexOf("https://", 0) === 0 || url.lastIndexOf("http://", 0) === 0) {
             return url;
         }
-        if (typeof window === 'undefined') {
+        if (typeof window === 'undefined' || !window || !window.document) {
             throw new Error(`Cannot resolve '${url}'.`);
         }
         let parser = window.document.createElement("a");
@@ -2993,6 +2993,9 @@ class HttpConnection {
         let baseUrl = (!parser.protocol || parser.protocol === ":")
             ? `${window.document.location.protocol}//${(parser.host || window.document.location.host)}`
             : `${parser.protocol}//${parser.host}`;
+        if (!url || url[0] != '/') {
+            url = '/' + url;
+        }
         let normalizedUrl = baseUrl + url;
         this.logger.log(ILogger_1.LogLevel.Information, `Normalizing '${url}' to '${normalizedUrl}'`);
         return normalizedUrl;
@@ -3047,18 +3050,18 @@ class WebSocketTransport {
             };
             webSocket.onmessage = (message) => {
                 this.logger.log(ILogger_1.LogLevel.Trace, `(WebSockets transport) data received: ${message.data}`);
-                if (this.onDataReceived) {
-                    this.onDataReceived(message.data);
+                if (this.onreceive) {
+                    this.onreceive(message.data);
                 }
             };
             webSocket.onclose = (event) => {
                 // webSocket will be null if the transport did not start successfully
-                if (this.onClosed && this.webSocket) {
+                if (this.onclose && this.webSocket) {
                     if (event.wasClean === false || event.code !== 1000) {
-                        this.onClosed(new Error(`Websocket closed with status code: ${event.code} (${event.reason})`));
+                        this.onclose(new Error(`Websocket closed with status code: ${event.code} (${event.reason})`));
                     }
                     else {
-                        this.onClosed();
+                        this.onclose();
                     }
                 }
             };
@@ -3093,14 +3096,14 @@ class ServerSentEventsTransport {
             let eventSource = new EventSource(this.url);
             try {
                 eventSource.onmessage = (e) => {
-                    if (this.onDataReceived) {
+                    if (this.onreceive) {
                         try {
                             this.logger.log(ILogger_1.LogLevel.Trace, `(SSE transport) data received: ${e.data}`);
-                            this.onDataReceived(e.data);
+                            this.onreceive(e.data);
                         }
                         catch (error) {
-                            if (this.onClosed) {
-                                this.onClosed(error);
+                            if (this.onclose) {
+                                this.onclose(error);
                             }
                             return;
                         }
@@ -3109,8 +3112,8 @@ class ServerSentEventsTransport {
                 eventSource.onerror = (e) => {
                     reject();
                     // don't report an error if the transport did not start successfully
-                    if (this.eventSource && this.onClosed) {
-                        this.onClosed(new Error(e.message || "Error occurred"));
+                    if (this.eventSource && this.onclose) {
+                        this.onclose(new Error(e.message || "Error occurred"));
                     }
                 };
                 eventSource.onopen = () => {
@@ -3160,22 +3163,22 @@ class LongPollingTransport {
         let pollXhr = new XMLHttpRequest();
         pollXhr.onload = () => {
             if (pollXhr.status == 200) {
-                if (this.onDataReceived) {
+                if (this.onreceive) {
                     try {
                         let response = transferMode === 1 /* Text */
                             ? pollXhr.responseText
                             : pollXhr.response;
                         if (response) {
                             this.logger.log(ILogger_1.LogLevel.Trace, `(LongPolling transport) data received: ${response}`);
-                            this.onDataReceived(response);
+                            this.onreceive(response);
                         }
                         else {
                             this.logger.log(ILogger_1.LogLevel.Information, "(LongPolling transport) timed out");
                         }
                     }
                     catch (error) {
-                        if (this.onClosed) {
-                            this.onClosed(error);
+                        if (this.onclose) {
+                            this.onclose(error);
                         }
                         return;
                     }
@@ -3183,20 +3186,20 @@ class LongPollingTransport {
                 this.poll(url, transferMode);
             }
             else if (this.pollXhr.status == 204) {
-                if (this.onClosed) {
-                    this.onClosed();
+                if (this.onclose) {
+                    this.onclose();
                 }
             }
             else {
-                if (this.onClosed) {
-                    this.onClosed(new HttpError_1.HttpError(pollXhr.statusText, pollXhr.status));
+                if (this.onclose) {
+                    this.onclose(new HttpError_1.HttpError(pollXhr.statusText, pollXhr.status));
                 }
             }
         };
         pollXhr.onerror = () => {
-            if (this.onClosed) {
+            if (this.onclose) {
                 // network related error or denied cross domain request
-                this.onClosed(new Error("Sending HTTP request failed."));
+                this.onclose(new Error("Sending HTTP request failed."));
             }
         };
         pollXhr.ontimeout = () => {
@@ -3261,47 +3264,60 @@ var TextMessageFormat;
 })(TextMessageFormat = exports.TextMessageFormat || (exports.TextMessageFormat = {}));
 var BinaryMessageFormat;
 (function (BinaryMessageFormat) {
+    // The length prefix of binary messages is encoded as VarInt. Read the comment in
+    // the BinaryMessageParser.TryParseMessage for details.
     function write(output) {
-        // .byteLength does is undefined in IE10
+        // msgpack5 uses returns Buffer instead of Uint8Array on IE10 and some other browser
+        //  in which case .byteLength does will be undefined
         let size = output.byteLength || output.length;
-        let buffer = new Uint8Array(size + 8);
-        // javascript bitwise operators only support 32-bit integers
-        for (let i = 7; i >= 4; i--) {
-            buffer[i] = size & 0xff;
-            size = size >> 8;
-        }
-        buffer.set(output, 8);
+        let lenBuffer = [];
+        do {
+            let sizePart = size & 0x7f;
+            size = size >> 7;
+            if (size > 0) {
+                sizePart |= 0x80;
+            }
+            lenBuffer.push(sizePart);
+        } while (size > 0);
+        // msgpack5 uses returns Buffer instead of Uint8Array on IE10 and some other browser
+        //  in which case .byteLength does will be undefined
+        size = output.byteLength || output.length;
+        let buffer = new Uint8Array(lenBuffer.length + size);
+        buffer.set(lenBuffer, 0);
+        buffer.set(output, lenBuffer.length);
         return buffer.buffer;
     }
     BinaryMessageFormat.write = write;
     function parse(input) {
         let result = [];
         let uint8Array = new Uint8Array(input);
-        // 8 - the length prefix size
+        const maxLengthPrefixSize = 5;
+        const numBitsToShift = [0, 7, 14, 21, 28];
         for (let offset = 0; offset < input.byteLength;) {
-            if (input.byteLength < offset + 8) {
-                throw new Error("Cannot read message size");
-            }
-            // Note javascript bitwise operators only support 32-bit integers - for now cutting bigger messages.
-            // Tracking bug https://github.com/aspnet/SignalR/issues/613
-            if (!(uint8Array[offset] == 0 && uint8Array[offset + 1] == 0 && uint8Array[offset + 2] == 0
-                && uint8Array[offset + 3] == 0 && (uint8Array[offset + 4] & 0x80) == 0)) {
-                throw new Error("Messages bigger than 2147483647 bytes are not supported");
-            }
+            let numBytes = 0;
             let size = 0;
-            for (let i = 4; i < 8; i++) {
-                size = (size << 8) | uint8Array[offset + i];
+            let byteRead;
+            do {
+                byteRead = uint8Array[offset + numBytes];
+                size = size | ((byteRead & 0x7f) << (numBitsToShift[numBytes]));
+                numBytes++;
+            } while (numBytes < Math.min(maxLengthPrefixSize, input.byteLength - offset) && (byteRead & 0x80) != 0);
+            if ((byteRead & 0x80) !== 0 && numBytes < maxLengthPrefixSize) {
+                throw new Error("Cannot read message size.");
             }
-            if (uint8Array.byteLength >= (offset + 8 + size)) {
+            if (numBytes === maxLengthPrefixSize && byteRead > 7) {
+                throw new Error("Messages bigger than 2GB are not supported.");
+            }
+            if (uint8Array.byteLength >= (offset + numBytes + size)) {
                 // IE does not support .slice() so use subarray
                 result.push(uint8Array.slice
-                    ? uint8Array.slice(offset + 8, offset + 8 + size)
-                    : uint8Array.subarray(offset + 8, offset + 8 + size));
+                    ? uint8Array.slice(offset + numBytes, offset + numBytes + size)
+                    : uint8Array.subarray(offset + numBytes, offset + numBytes + size));
             }
             else {
-                throw new Error("Incomplete message");
+                throw new Error("Incomplete message.");
             }
-            offset = offset + 8 + size;
+            offset = offset + numBytes + size;
         }
         return result;
     }
@@ -32011,7 +32027,7 @@ function unbind(el) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(37);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_489acb3c_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2e6db206_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(69);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
@@ -32030,7 +32046,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_489acb3c_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2e6db206_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__["a" /* default */],
   __vue_styles__,
   __vue_scopeId__,
   __vue_module_identifier__
@@ -32046,9 +32062,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-489acb3c", Component.options)
+    hotAPI.createRecord("data-v-2e6db206", Component.options)
   } else {
-    hotAPI.reload("data-v-489acb3c", Component.options)
+    hotAPI.reload("data-v-2e6db206", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -32069,13 +32085,13 @@ var content = __webpack_require__(33);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(35)("21bc9704", content, false);
+var update = __webpack_require__(35)("20d37740", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
  if(!content.locals) {
-   module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-489acb3c\",\"scoped\":false,\"hasInlineConfig\":false}!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./App.vue", function() {
-     var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-489acb3c\",\"scoped\":false,\"hasInlineConfig\":false}!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./App.vue");
+   module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-2e6db206\",\"scoped\":false,\"hasInlineConfig\":false}!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./App.vue", function() {
+     var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-2e6db206\",\"scoped\":false,\"hasInlineConfig\":false}!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./App.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });
@@ -32093,7 +32109,7 @@ exports = module.exports = __webpack_require__(34)(undefined);
 
 
 // module
-exports.push([module.i, "\n#app {\n    font-family: 'Avenir', Helvetica, Arial, sans-serif;\n    -webkit-font-smoothing: antialiased;\n    -moz-osx-font-smoothing: grayscale;\n    text-align: center;\n    color: #2c3e50;\n    margin-top: 24px;\n}\n", ""]);
+exports.push([module.i, "\n#app {\r\n    font-family: 'Avenir', Helvetica, Arial, sans-serif;\r\n    -webkit-font-smoothing: antialiased;\r\n    -moz-osx-font-smoothing: grayscale;\r\n    text-align: center;\r\n    color: #2c3e50;\r\n    margin-top: 24px;\n}\r\n", ""]);
 
 // exports
 
@@ -32686,17 +32702,14 @@ class HubConnection {
         }
         this.logger = Loggers_1.LoggerFactory.createLogger(options.logging);
         this.protocol = options.protocol || new JsonHubProtocol_1.JsonHubProtocol();
-        this.connection.onDataReceived = data => {
-            this.onDataReceived(data);
-        };
-        this.connection.onClosed = (error) => {
-            this.onConnectionClosed(error);
-        };
+        this.connection.onreceive = (data) => this.processIncomingData(data);
+        this.connection.onclose = (error) => this.connectionClosed(error);
         this.callbacks = new Map();
         this.methods = new Map();
+        this.closedCallbacks = [];
         this.id = 0;
     }
-    onDataReceived(data) {
+    processIncomingData(data) {
         // Parse the messages
         let messages = this.protocol.parseMessages(data);
         for (var i = 0; i < messages.length; ++i) {
@@ -32722,9 +32735,9 @@ class HubConnection {
         }
     }
     invokeClientMethod(invocationMessage) {
-        let method = this.methods.get(invocationMessage.target.toLowerCase());
-        if (method) {
-            method.apply(this, invocationMessage.arguments);
+        let methods = this.methods.get(invocationMessage.target.toLowerCase());
+        if (methods) {
+            methods.forEach(m => m.apply(this, invocationMessage.arguments));
             if (!invocationMessage.nonblocking) {
                 // TODO: send result back to the server?
             }
@@ -32733,7 +32746,7 @@ class HubConnection {
             this.logger.log(ILogger_1.LogLevel.Warning, `No client method with the name '${invocationMessage.target}' found.`);
         }
     }
-    onConnectionClosed(error) {
+    connectionClosed(error) {
         let errorCompletionMessage = {
             type: 3 /* Completion */,
             invocationId: "-1",
@@ -32743,9 +32756,7 @@ class HubConnection {
             callback(errorCompletionMessage);
         });
         this.callbacks.clear();
-        if (this.connectionClosedCallback) {
-            this.connectionClosedCallback(error);
-        }
+        this.closedCallbacks.forEach(c => c.apply(this, [error]));
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -32826,10 +32837,33 @@ class HubConnection {
         return p;
     }
     on(methodName, method) {
-        this.methods.set(methodName.toLowerCase(), method);
+        if (!methodName || !method) {
+            return;
+        }
+        methodName = methodName.toLowerCase();
+        if (!this.methods.has(methodName)) {
+            this.methods.set(methodName, []);
+        }
+        this.methods.get(methodName).push(method);
     }
-    set onClosed(callback) {
-        this.connectionClosedCallback = callback;
+    off(methodName, method) {
+        if (!methodName || !method) {
+            return;
+        }
+        methodName = methodName.toLowerCase();
+        let handlers = this.methods.get(methodName);
+        if (!handlers) {
+            return;
+        }
+        var removeIdx = handlers.indexOf(method);
+        if (removeIdx != -1) {
+            handlers.splice(removeIdx, 1);
+        }
+    }
+    onclose(callback) {
+        if (callback) {
+            this.closedCallbacks.push(callback);
+        }
     }
     createInvocation(methodName, args, nonblocking) {
         let id = this.id;
@@ -34920,7 +34954,10 @@ module.exports = function buildEncode (encodingTypes, forceFloat64, compatibilit
         buf.writeUInt32BE(len, 1)
         buf.write(obj, 5)
       }
-    } else if (obj && obj.readUInt32LE) {
+    } else if (obj && (obj.readUInt32LE || obj instanceof Uint8Array)) {
+      if (obj instanceof Uint8Array) {
+        obj = Buffer.from(obj)
+      }
       // weird hack to support Buffer
       // and Buffer-like objects
       if (obj.length <= 0xff) {
@@ -35166,7 +35203,7 @@ function encodeFloat (obj, forceFloat64) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Login_vue__ = __webpack_require__(61);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0c29a7c4_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_Login_vue__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_5a301745_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_Login_vue__ = __webpack_require__(62);
 var disposed = false
 var normalizeComponent = __webpack_require__(8)
 /* script */
@@ -35181,7 +35218,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Login_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0c29a7c4_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_Login_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_5a301745_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_Login_vue__["a" /* default */],
   __vue_styles__,
   __vue_scopeId__,
   __vue_module_identifier__
@@ -35197,9 +35234,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-0c29a7c4", Component.options)
+    hotAPI.createRecord("data-v-5a301745", Component.options)
   } else {
-    hotAPI.reload("data-v-0c29a7c4", Component.options)
+    hotAPI.reload("data-v-5a301745", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -35373,7 +35410,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-0c29a7c4", esExports)
+     require("vue-hot-reload-api").rerender("data-v-5a301745", esExports)
   }
 }
 
@@ -35383,7 +35420,7 @@ if (false) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PlayersOnline_vue__ = __webpack_require__(64);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7e5cc400_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_PlayersOnline_vue__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0b74fc81_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_PlayersOnline_vue__ = __webpack_require__(65);
 var disposed = false
 var normalizeComponent = __webpack_require__(8)
 /* script */
@@ -35398,7 +35435,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_PlayersOnline_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7e5cc400_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_PlayersOnline_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0b74fc81_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_PlayersOnline_vue__["a" /* default */],
   __vue_styles__,
   __vue_scopeId__,
   __vue_module_identifier__
@@ -35414,9 +35451,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-7e5cc400", Component.options)
+    hotAPI.createRecord("data-v-0b74fc81", Component.options)
   } else {
-    hotAPI.reload("data-v-7e5cc400", Component.options)
+    hotAPI.reload("data-v-0b74fc81", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -35489,7 +35526,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-7e5cc400", esExports)
+     require("vue-hot-reload-api").rerender("data-v-0b74fc81", esExports)
   }
 }
 
@@ -35499,7 +35536,7 @@ if (false) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CardsDeck_vue__ = __webpack_require__(67);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0ef47407_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_CardsDeck_vue__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0d453b08_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_CardsDeck_vue__ = __webpack_require__(68);
 var disposed = false
 var normalizeComponent = __webpack_require__(8)
 /* script */
@@ -35514,7 +35551,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CardsDeck_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0ef47407_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_CardsDeck_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0d453b08_hasScoped_false_node_modules_vue_loader_lib_selector_type_template_index_0_CardsDeck_vue__["a" /* default */],
   __vue_styles__,
   __vue_scopeId__,
   __vue_module_identifier__
@@ -35530,9 +35567,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-0ef47407", Component.options)
+    hotAPI.createRecord("data-v-0d453b08", Component.options)
   } else {
-    hotAPI.reload("data-v-0ef47407", Component.options)
+    hotAPI.reload("data-v-0d453b08", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -35643,7 +35680,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-0ef47407", esExports)
+     require("vue-hot-reload-api").rerender("data-v-0d453b08", esExports)
   }
 }
 
@@ -35835,7 +35872,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-489acb3c", esExports)
+     require("vue-hot-reload-api").rerender("data-v-2e6db206", esExports)
   }
 }
 
