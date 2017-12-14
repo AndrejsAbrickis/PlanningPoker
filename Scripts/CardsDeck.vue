@@ -4,8 +4,8 @@
             <h3>Your hand</h3>
         </v-flex>
         <v-flex xs4 sm3 md2 v-for="card in cards" :key="card.value">
-            <v-card class="purple white--text" @click="vote(card.value)">
-                <v-card-text>
+            <v-card class="purple white--text">
+                <v-card-text @click="vote(card.value)">
                     <h3>{{ card.label }}</h3>
                 </v-card-text>
             </v-card>
