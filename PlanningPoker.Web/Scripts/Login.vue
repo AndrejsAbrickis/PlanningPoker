@@ -34,6 +34,9 @@ export default {
     join: Function,
     player: Object
   },
+  mounted() {
+    this.groupId = new URLSearchParams(window.location.search).get("groupId");
+  },
   methods: {
     submit() {
       if (this.valid) {

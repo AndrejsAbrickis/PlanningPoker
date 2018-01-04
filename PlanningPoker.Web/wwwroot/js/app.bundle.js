@@ -14854,129 +14854,140 @@ exports.clearImmediate = clearImmediate;
 
 
 const HUBS = {
-    POKER: '/poker'
+  POKER: "/poker"
 };
 
 const HUB_EVENTS = {
-    Send: "Send",
-    UsersJoined: "UsersJoined",
-    Disconnected: "Disconnected",
-    Connected: "Connected",
-    JoinUser: "JoinUser",
-    NewGame: 'NewGame',
-    ShowCards: 'ShowCards',
-    JoinGroup: "JoinGroup",
-    LeaveGroup: "LeaveGroup",
-    UpdateUser: "UpdateUser"
+  Send: "Send",
+  UsersJoined: "UsersJoined",
+  Disconnected: "Disconnected",
+  Connected: "Connected",
+  JoinUser: "JoinUser",
+  NewGame: "NewGame",
+  ShowCards: "ShowCards",
+  JoinGroup: "JoinGroup",
+  LeaveGroup: "LeaveGroup",
+  UpdateUser: "UpdateUser"
 };
 
 /* harmony default export */ __webpack_exports__["a"] = ({
-    name: 'app',
-    components: {
-        Login: __WEBPACK_IMPORTED_MODULE_2__Scripts_Login_vue__["a" /* default */],
-        PlayersOnline: __WEBPACK_IMPORTED_MODULE_3__Scripts_PlayersOnline_vue__["a" /* default */],
-        CardsDeck: __WEBPACK_IMPORTED_MODULE_4__Scripts_CardsDeck_vue__["a" /* default */]
+  name: "app",
+  components: {
+    Login: __WEBPACK_IMPORTED_MODULE_2__Scripts_Login_vue__["a" /* default */],
+    PlayersOnline: __WEBPACK_IMPORTED_MODULE_3__Scripts_PlayersOnline_vue__["a" /* default */],
+    CardsDeck: __WEBPACK_IMPORTED_MODULE_4__Scripts_CardsDeck_vue__["a" /* default */]
+  },
+  data() {
+    return {
+      pokerHub: "",
+      joined: false,
+      messages: [],
+      player: {},
+      playersOnline: {},
+      isCardsRevealed: false
+    };
+  },
+  mounted() {
+    this.pokerHub = new __WEBPACK_IMPORTED_MODULE_0__aspnet_signalr_client__["HubConnection"](HUBS.POKER);
+    this.pokerHub.start();
+
+    this.pokerHub.on(HUB_EVENTS.Connected, this.handleConnected);
+    this.pokerHub.on(HUB_EVENTS.Disconnected, this.handleDisconnected);
+    this.pokerHub.on(HUB_EVENTS.UpdateUser, this.handleUpdateUser);
+    this.pokerHub.on(HUB_EVENTS.Send, this.handleSend);
+    this.pokerHub.on(HUB_EVENTS.UsersJoined, this.handleUserJoined);
+    this.pokerHub.on(HUB_EVENTS.NewGame, this.handleNewGame);
+    this.pokerHub.on(HUB_EVENTS.ShowCards, this.handleShowCards);
+    this.pokerHub.on(HUB_EVENTS.JoinGroup, this.handleJoinGroup);
+    this.pokerHub.on(HUB_EVENTS.LeaveGroup, this.handleLeaveGroup);
+
+    // this.pokerHub.start();
+  },
+  methods: {
+    handleConnected(usersOnline) {
+      console.warn(HUB_EVENTS.Connected);
+      console.log(usersOnline);
+      usersOnline.forEach(user => {
+        this.$set(this.playersOnline, user.connectionId, {
+          Name: user.name || ""
+        });
+      });
     },
-    data() {
-        return {
-            pokerHub: '',
-            joined: false,
-            messages: [],
-            player: {},
-            playersOnline: {},
-            isCardsRevealed: false
-        };
+    handleDisconnected(usersOnline) {
+      console.warn(HUB_EVENTS.Disconnected);
+      console.log(HUB_EVENTS.Disconnected);
+      this.playersOnline = {};
+
+      usersOnline.forEach(user => {
+        this.$set(this.playersOnline, user.connectionId, {
+          Name: user.name || ""
+        });
+      });
     },
-    mounted() {
-        this.pokerHub = new __WEBPACK_IMPORTED_MODULE_0__aspnet_signalr_client__["HubConnection"](HUBS.POKER);
-        this.pokerHub.start();
-
-        this.pokerHub.on(HUB_EVENTS.Connected, this.handleConnected);
-        this.pokerHub.on(HUB_EVENTS.Disconnected, this.handleDisconnected);
-        this.pokerHub.on(HUB_EVENTS.UpdateUser, this.handleUpdateUser);
-        this.pokerHub.on(HUB_EVENTS.Send, this.handleSend);
-        this.pokerHub.on(HUB_EVENTS.UsersJoined, this.handleUserJoined);
-        this.pokerHub.on(HUB_EVENTS.NewGame, this.handleNewGame);
-        this.pokerHub.on(HUB_EVENTS.ShowCards, this.handleShowCards);
-        this.pokerHub.on(HUB_EVENTS.JoinGroup, this.handleJoinGroup);
-        this.pokerHub.on(HUB_EVENTS.LeaveGroup, this.handleLeaveGroup);
-
-        // this.pokerHub.start();
+    join(playerName) {
+      this.pokerHub.invoke(HUB_EVENTS.JoinUser, playerName);
     },
-    methods: {
-        handleConnected(usersOnline) {
-            console.warn(HUB_EVENTS.Connected);
-            console.log(usersOnline);
-            usersOnline.forEach(user => {
-                this.$set(this.playersOnline, user.connectionId, { Name: user.name || '' });
-            });
-        },
-        handleDisconnected(usersOnline) {
-            console.warn(HUB_EVENTS.Disconnected);
-            console.log(HUB_EVENTS.Disconnected);
-            this.playersOnline = {};
+    playCard(card) {
+      this.pokerHub.invoke(HUB_EVENTS.Send, card);
+    },
+    handleUserJoined(user) {
+      console.warn(HUB_EVENTS.JoinUser);
+      console.log(user);
+      this.joined = true;
+      this.$set(this.playersOnline, user.connectionId, { Name: user.name });
+    },
+    handleSend(message) {
+      console.warn(HUB_EVENTS.Send);
+      console.log(message);
+      this.messages.push(message);
+      this.message = "";
+    },
+    newGame() {
+      this.pokerHub.invoke(HUB_EVENTS.NewGame);
+    },
+    handleNewGame() {
+      console.warn(HUB_EVENTS.NewGame);
+      __WEBPACK_IMPORTED_MODULE_1__EventBus__["b" /* default */].$emit(__WEBPACK_IMPORTED_MODULE_1__EventBus__["a" /* Events */].NEW_GAME_STARTED);
+      this.messages = [];
+      this.isCardsRevealed = false;
+    },
+    showCards() {
+      this.pokerHub.invoke(HUB_EVENTS.ShowCards);
+    },
+    handleShowCards() {
+      console.warn(HUB_EVENTS.ShowCards);
+      this.isCardsRevealed = true;
+    },
+    joinGroup(playerName, groupId) {
+      const message = { playerName, groupId };
+      this.pokerHub.invoke(HUB_EVENTS.JoinGroup, message);
 
-            usersOnline.forEach(user => {
-                this.$set(this.playersOnline, user.connectionId, { Name: user.name || '' });
-            });
-        },
-        join(playerName) {
-            this.pokerHub.invoke(HUB_EVENTS.JoinUser, playerName);
-        },
-        playCard(card) {
-            this.pokerHub.invoke(HUB_EVENTS.Send, card);
-        },
-        handleUserJoined(user) {
-            console.warn(HUB_EVENTS.JoinUser);
-            console.log(user);
-            this.joined = true;
-            this.$set(this.playersOnline, user.connectionId, { Name: user.name });
-        },
-        handleSend(message) {
-            console.warn(HUB_EVENTS.Send);
-            console.log(message);
-            this.messages.push(message);
-            this.message = '';
-        },
-        newGame() {
-            this.pokerHub.invoke(HUB_EVENTS.NewGame);
-        },
-        handleNewGame() {
-            console.warn(HUB_EVENTS.NewGame);
-            __WEBPACK_IMPORTED_MODULE_1__EventBus__["b" /* default */].$emit(__WEBPACK_IMPORTED_MODULE_1__EventBus__["a" /* Events */].NEW_GAME_STARTED);
-            this.messages = [];
-            this.isCardsRevealed = false;
-        },
-        showCards() {
-            this.pokerHub.invoke(HUB_EVENTS.ShowCards);
-        },
-        handleShowCards() {
-            console.warn(HUB_EVENTS.ShowCards);
-            this.isCardsRevealed = true;
-        },
-        joinGroup(playerName, groupId) {
-            const message = { playerName, groupId };
-            this.pokerHub.invoke(HUB_EVENTS.JoinGroup, message);
-        },
-        handleJoinGroup(usersOnline) {
-            console.warn(HUB_EVENTS.JoinGroup);
-            console.log(usersOnline);
-            this.playersOnline = {};
+      if (history.pushState) {
+        const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?groupId=${groupId}`;
+        window.history.pushState({ path: url }, "", url);
+      }
+    },
+    handleJoinGroup(usersOnline) {
+      console.warn(HUB_EVENTS.JoinGroup);
+      console.log(usersOnline);
+      this.playersOnline = {};
 
-            usersOnline.forEach(user => {
-                this.$set(this.playersOnline, user.connectionId, { Name: user.name || '' });
-            });
-        },
-        handleLeaveGroup() {
-            console.warn(HUB_EVENTS.LeaveGroup);
-        },
-        handleUpdateUser(user) {
-            console.warn(HUB_EVENTS.UpdateUser);
-            console.log(user);
-            this.joined = true;
-            this.player = user;
-        }
+      usersOnline.forEach(user => {
+        this.$set(this.playersOnline, user.connectionId, {
+          Name: user.name || ""
+        });
+      });
+    },
+    handleLeaveGroup() {
+      console.warn(HUB_EVENTS.LeaveGroup);
+    },
+    handleUpdateUser(user) {
+      console.warn(HUB_EVENTS.UpdateUser);
+      console.log(user);
+      this.joined = true;
+      this.player = user;
     }
+  }
 });
 
 /***/ }),
@@ -17724,6 +17735,9 @@ const Events = {
   props: {
     join: Function,
     player: Object
+  },
+  mounted() {
+    this.groupId = new URLSearchParams(window.location.search).get("groupId");
   },
   methods: {
     submit() {
@@ -35123,7 +35137,7 @@ exports = module.exports = __webpack_require__(40)(undefined);
 
 
 // module
-exports.push([module.i, "\n#app {\n    font-family: 'Avenir', Helvetica, Arial, sans-serif;\n    -webkit-font-smoothing: antialiased;\n    -moz-osx-font-smoothing: grayscale;\n    text-align: center;\n    color: #2c3e50;\n    margin-top: 24px;\n}\n", ""]);
+exports.push([module.i, "\n#app {\n  font-family: \"Avenir\", Helvetica, Arial, sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  text-align: center;\n  color: #2c3e50;\n  margin-top: 24px;\n}\n", ""]);
 
 // exports
 
