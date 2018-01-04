@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace signalR_vuejs_demo
+namespace PlanningPoker.Web
 {
     public class Startup
     {

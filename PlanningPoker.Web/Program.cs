@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace signalR_vuejs_demo
+namespace PlanningPoker.Web
 {
     public class Program
     {

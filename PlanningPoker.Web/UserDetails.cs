@@ -1,4 +1,4 @@
-namespace signalR_vuejs_demo
+namespace PlanningPoker.Web
 {
     public class UserDetails
     {

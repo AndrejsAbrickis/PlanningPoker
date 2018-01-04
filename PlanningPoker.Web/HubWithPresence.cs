@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 
-namespace signalR_vuejs_demo
+namespace PlanningPoker.Web
 {
     public class HubWithPresence : Hub
     {

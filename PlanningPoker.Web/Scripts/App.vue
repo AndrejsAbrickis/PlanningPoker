@@ -83,6 +83,7 @@ export default {
     },
     mounted() {
         this.pokerHub = new HubConnection(HUBS.POKER);
+        this.pokerHub.start();
 
         this.pokerHub.on(HUB_EVENTS.Connected, this.handleConnected);
         this.pokerHub.on(HUB_EVENTS.Disconnected, this.handleDisconnected);
@@ -94,7 +95,7 @@ export default {
         this.pokerHub.on(HUB_EVENTS.JoinGroup, this.handleJoinGroup);
         this.pokerHub.on(HUB_EVENTS.LeaveGroup, this.handleLeaveGroup);
 
-        this.pokerHub.start();
+        // this.pokerHub.start();
     },
     methods: {
         handleConnected(usersOnline) {
