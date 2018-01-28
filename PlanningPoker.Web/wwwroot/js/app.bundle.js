@@ -15124,6 +15124,7 @@ exports.clearImmediate = clearImmediate;
 //
 //
 //
+//
 
 
 
@@ -15148,7 +15149,8 @@ const HUBS = {
       messages: [],
       player: {},
       playersOnline: {},
-      isCardsRevealed: false
+      isCardsRevealed: false,
+      gamesPlayed: []
     };
   },
   mounted() {
@@ -15201,6 +15203,7 @@ const HUBS = {
     },
     handleNewGame() {
       __WEBPACK_IMPORTED_MODULE_1__EventBus__["b" /* default */].$emit(__WEBPACK_IMPORTED_MODULE_1__EventBus__["a" /* Events */].NEW_GAME_STARTED);
+      this.gamesPlayed.push(this.messages);
       this.messages = [];
       this.isCardsRevealed = false;
     },
@@ -18003,6 +18006,14 @@ const Events = {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__PlayersOnline_vue__ = __webpack_require__(70);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__CardsDeck_vue__ = __webpack_require__(74);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__GamesStats_vue__ = __webpack_require__(78);
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -18040,14 +18051,15 @@ const Events = {
 //
 //
 
-// https://www.behance.net/gallery/54695697/FinDox-Accounting-Dashboard
+
 
 
 
 /* harmony default export */ __webpack_exports__["a"] = ({
   components: {
     PlayersOnline: __WEBPACK_IMPORTED_MODULE_0__PlayersOnline_vue__["a" /* default */],
-    CardsDeck: __WEBPACK_IMPORTED_MODULE_1__CardsDeck_vue__["a" /* default */]
+    CardsDeck: __WEBPACK_IMPORTED_MODULE_1__CardsDeck_vue__["a" /* default */],
+    GamesStats: __WEBPACK_IMPORTED_MODULE_2__GamesStats_vue__["a" /* default */]
   },
   props: {
     player: Object,
@@ -18056,7 +18068,8 @@ const Events = {
     playCard: Function,
     isCardsRevealed: Boolean,
     showCards: Function,
-    newGame: Function
+    newGame: Function,
+    gamesPlayed: Array
   },
   data() {
     return {
@@ -35468,7 +35481,7 @@ exports = module.exports = __webpack_require__(12)(false);
 
 
 // module
-exports.push([module.i, "\n#app {\n  font-family: \"Avenir\", Helvetica, Arial, sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  text-align: center;\n  color: #2c3e50;\n}\n.no-padding {\n  padding: 0!important;\n}\n.full-height {\n  height: 100%;\n}\n", ""]);
+exports.push([module.i, "\n#app {\n  font-family: \"Avenir\", Helvetica, Arial, sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  text-align: center;\n  color: #2c3e50;\n}\n.no-padding {\n  padding: 0!important;\n}\n.full-height {\n  height: 100%;\n}\n.u-ta-l {\n  text-align: left;\n}\n", ""]);
 
 // exports
 
@@ -38106,7 +38119,7 @@ exports = module.exports = __webpack_require__(12)(false);
 
 
 // module
-exports.push([module.i, "\n.sidebar[data-v-c85095fa] {\n  background: #2c2f42;\n}\n.h3[data-v-c85095fa] {\n  text-transform: uppercase;\n  font-size: 24px;\n}\n", ""]);
+exports.push([module.i, "\n.pp-grid[data-v-c85095fa] {\n    display: grid;\n    grid-template-columns: 240px auto;\n    height: 100%;\n}\n.pp-sidebar[data-v-c85095fa] {\n  display: flex;\n  flex-direction: column;\n  height: 100%;\n}\n.h3[data-v-c85095fa] {\n  text-transform: uppercase;\n  font-size: 24px;\n}\n.u-mt-auto[data-v-c85095fa] {\n  margin-top: auto;\n}\n.u-ps-16[data-v-c85095fa] {\n    padding-left: 16px;\n    padding-right: 16px;\n}\n", ""]);
 
 // exports
 
@@ -38344,7 +38357,7 @@ var render = function() {
         { attrs: { row: "", wrap: "" } },
         [
           _c("v-flex", { attrs: { xs10: "", "offset-xs1": "" } }, [
-            _c("h3", [_vm._v("Your hand")])
+            _c("h3", [_vm._v("Play card")])
           ]),
           _vm._v(" "),
           _vm._l(_vm.cards, function(card) {
@@ -38399,34 +38412,25 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "v-container",
-    {
-      staticClass: "no-padding full-height",
-      attrs: { fluid: "", "grid-list-md": "" }
-    },
-    [
-      _c(
-        "v-layout",
-        { staticClass: "full-height", attrs: { row: "", wrap: "" } },
-        [
-          _c(
-            "v-flex",
-            {
-              staticClass: "grey lighten-4 full-height",
-              attrs: { xs10: "", "offset-xs1": "", sm4: "", "offset-sm0": "" }
-            },
-            [
-              _c("h3", { staticClass: "h3" }, [
-                _vm._v(_vm._s(_vm.player.groupId))
-              ]),
-              _vm._v(" "),
-              _c("players-online", {
-                attrs: { user: _vm.player, players: _vm.playersOnline }
-              }),
-              _vm._v(" "),
+  return _c("div", { staticClass: "pp-grid" }, [
+    _c(
+      "div",
+      [
+        _c(
+          "v-flex",
+          { staticClass: "grey lighten-4 pp-sidebar" },
+          [
+            _c("h3", { staticClass: "h3" }, [
+              _vm._v(_vm._s(_vm.player.groupId))
+            ]),
+            _vm._v(" "),
+            _c("players-online", {
+              attrs: { user: _vm.player, players: _vm.playersOnline }
+            }),
+            _vm._v(" "),
+            _c("div", { staticClass: "u-mt-auto" }, [
               _c("p", { staticClass: "text-xs-center mt-5" }, [
-                _vm._v("\n                Made by "),
+                _vm._v("\n                    Made by "),
                 _c(
                   "a",
                   {
@@ -38479,117 +38483,140 @@ var render = function() {
                   ]
                 )
               ])
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "v-flex",
-            {
-              attrs: { xs10: "", "offset-xs1": "", sm8: "", "offset-sm0": "" }
-            },
-            [
-              _c("cards-deck", { attrs: { playCard: _vm.playCard } }),
-              _vm._v(" "),
-              _c(
-                "v-layout",
-                { attrs: { row: "", wrap: "" } },
-                [
-                  _vm.messages.length > 0
-                    ? _c("v-flex", { attrs: { xs12: "" } }, [
-                        _c("h3", [_vm._v("Played cards")])
-                      ])
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm._l(_vm.messages, function(messageItem) {
-                    return _c(
+            ])
+          ],
+          1
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "u-ps-16" },
+      [
+        _vm.gamesPlayed.length > 0
+          ? _c("games-stats", {
+              attrs: {
+                gamesPlayed: _vm.gamesPlayed,
+                players: _vm.playersOnline
+              }
+            })
+          : _vm._e(),
+        _vm._v(" "),
+        _c(
+          "v-container",
+          {
+            staticClass: "no-padding full-height",
+            attrs: { fluid: "", "grid-list-md": "" }
+          },
+          [
+            _c(
+              "v-flex",
+              [
+                _c("cards-deck", { attrs: { playCard: _vm.playCard } }),
+                _vm._v(" "),
+                _c(
+                  "v-layout",
+                  { attrs: { row: "", wrap: "" } },
+                  [
+                    _vm.messages.length > 0
+                      ? _c("v-flex", { attrs: { xs12: "" } }, [
+                          _c("h3", [_vm._v("Played cards")])
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm._l(_vm.messages, function(messageItem) {
+                      return _c(
+                        "v-flex",
+                        { key: messageItem.connectionId, attrs: { xs4: "" } },
+                        [
+                          _c(
+                            "v-card",
+                            { staticClass: "lime lighten-3" },
+                            [
+                              _c("v-card-text", [
+                                _vm._v(
+                                  "\n                                " +
+                                    _vm._s(
+                                      _vm.playersOnline[
+                                        messageItem.connectionId
+                                      ].Name
+                                    ) +
+                                    "\n                                "
+                                ),
+                                _c(
+                                  "h4",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "show",
+                                        rawName: "v-show",
+                                        value: _vm.isCardsRevealed,
+                                        expression: "isCardsRevealed"
+                                      }
+                                    ]
+                                  },
+                                  [_vm._v(_vm._s(messageItem.message))]
+                                )
+                              ])
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    }),
+                    _vm._v(" "),
+                    _c(
                       "v-flex",
-                      { key: messageItem.connectionId, attrs: { xs4: "" } },
+                      { attrs: { xs10: "", "offset-xs-1": "" } },
                       [
-                        _c(
-                          "v-card",
-                          { staticClass: "lime lighten-3" },
-                          [
-                            _c("v-card-text", [
-                              _vm._v(
-                                "\n                            " +
-                                  _vm._s(
-                                    _vm.playersOnline[messageItem.connectionId]
-                                      .Name
-                                  ) +
-                                  "\n                            "
-                              ),
-                              _c(
-                                "h4",
-                                {
-                                  directives: [
-                                    {
-                                      name: "show",
-                                      rawName: "v-show",
-                                      value: _vm.isCardsRevealed,
-                                      expression: "isCardsRevealed"
-                                    }
-                                  ]
-                                },
-                                [_vm._v(_vm._s(messageItem.message))]
-                              )
-                            ])
-                          ],
-                          1
-                        )
+                        !_vm.isCardsRevealed && _vm.messages.length > 0
+                          ? _c(
+                              "v-btn",
+                              {
+                                attrs: { color: "warning", dark: "" },
+                                on: {
+                                  click: function($event) {
+                                    _vm.showCards()
+                                  }
+                                }
+                              },
+                              [_vm._v("Show cards")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.isCardsRevealed
+                          ? _c(
+                              "v-btn",
+                              {
+                                attrs: { color: "warning", dark: "" },
+                                on: {
+                                  click: function($event) {
+                                    _vm.newGame()
+                                  }
+                                }
+                              },
+                              [_vm._v("New game")]
+                            )
+                          : _vm._e()
                       ],
                       1
                     )
-                  }),
-                  _vm._v(" "),
-                  _c(
-                    "v-flex",
-                    { attrs: { xs10: "", "offset-xs-1": "" } },
-                    [
-                      !_vm.isCardsRevealed && _vm.messages.length > 0
-                        ? _c(
-                            "v-btn",
-                            {
-                              attrs: { color: "warning", dark: "" },
-                              on: {
-                                click: function($event) {
-                                  _vm.showCards()
-                                }
-                              }
-                            },
-                            [_vm._v("Show cards")]
-                          )
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.isCardsRevealed
-                        ? _c(
-                            "v-btn",
-                            {
-                              attrs: { color: "warning", dark: "" },
-                              on: {
-                                click: function($event) {
-                                  _vm.newGame()
-                                }
-                              }
-                            },
-                            [_vm._v("New game")]
-                          )
-                        : _vm._e()
-                    ],
-                    1
-                  )
-                ],
-                2
-              )
-            ],
-            1
-          )
-        ],
-        1
-      )
-    ],
-    1
-  )
+                  ],
+                  2
+                )
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -38630,7 +38657,8 @@ var render = function() {
               playCard: _vm.playCard,
               isCardsRevealed: _vm.isCardsRevealed,
               showCards: _vm.showCards,
-              newGame: _vm.newGame
+              newGame: _vm.newGame,
+              gamesPlayed: _vm.gamesPlayed
             }
           })
         : _vm._e()
@@ -38648,6 +38676,205 @@ if (false) {
     require("vue-hot-reload-api")      .rerender("data-v-472cff63", esExports)
   }
 }
+
+/***/ }),
+/* 78 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_GamesStats_vue__ = __webpack_require__(80);
+/* unused harmony namespace reexport */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_c2f490e8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_GamesStats_vue__ = __webpack_require__(79);
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(81)
+}
+var normalizeComponent = __webpack_require__(5)
+/* script */
+
+
+/* template */
+
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_GamesStats_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_c2f490e8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_GamesStats_vue__["a" /* default */],
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "GamesStats.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-c2f490e8", Component.options)
+  } else {
+    hotAPI.reload("data-v-c2f490e8", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
+
+
+/***/ }),
+/* 79 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("h3", [_vm._v("Games stats")]),
+      _vm._v(" "),
+      _c(
+        "v-container",
+        { attrs: { fluid: "", "grid-list-sm": "" } },
+        _vm._l(_vm.gamesPlayed, function(game, index) {
+          return _c(
+            "v-layout",
+            { key: index, attrs: { row: "", wrap: "" } },
+            [
+              _c("v-flex", { attrs: { xs1: "" } }, [
+                _c("span", { staticClass: "index" }, [
+                  _vm._v(_vm._s(index + 1) + ".")
+                ])
+              ]),
+              _vm._v(" "),
+              _c(
+                "v-flex",
+                { staticClass: "u-ta-l", attrs: { xs11: "" } },
+                _vm._l(game, function(vote, index) {
+                  return _c(
+                    "v-chip",
+                    { key: index, attrs: { outline: "", color: "green" } },
+                    [
+                      _c("v-avatar", { staticClass: "green darken-4" }, [
+                        _vm._v(_vm._s(vote.message))
+                      ]),
+                      _vm._v(" "),
+                      _vm.players[vote.connectionId]
+                        ? _c("span", [
+                            _vm._v(_vm._s(_vm.players[vote.connectionId].Name))
+                          ])
+                        : _c("span", [_vm._v(_vm._s(vote.connectionId))])
+                    ],
+                    1
+                  )
+                })
+              )
+            ],
+            1
+          )
+        })
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-c2f490e8", esExports)
+  }
+}
+
+/***/ }),
+/* 80 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+  props: {
+    gamesPlayed: Array,
+    players: Object
+  }
+});
+
+/***/ }),
+/* 81 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(82);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(13)("7f505cc5", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-c2f490e8\",\"scoped\":false,\"hasInlineConfig\":false}!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./GamesStats.vue", function() {
+     var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-c2f490e8\",\"scoped\":false,\"hasInlineConfig\":false}!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./GamesStats.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 82 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(12)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.index {\n    font-size: 16px;\n    font-weight: bold;\n    line-height: 40px;\n}\n", ""]);
+
+// exports
+
 
 /***/ })
 ],[37]);

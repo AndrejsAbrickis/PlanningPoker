@@ -1,7 +1,7 @@
 <template>
     <v-layout row wrap v-if="!hasVoted">
         <v-flex xs10 offset-xs1>
-            <h3>Your hand</h3>
+            <h3>Play card</h3>
         </v-flex>
         <v-flex xs4 sm3 md2 v-for="card in cards" :key="card.value">
             <v-card class="purple white--text">

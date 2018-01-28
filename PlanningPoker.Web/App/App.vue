@@ -9,7 +9,8 @@
           :playCard="playCard"
           :isCardsRevealed="isCardsRevealed"
           :showCards="showCards"
-          :newGame="newGame">
+          :newGame="newGame"
+          :gamesPlayed="gamesPlayed">
         </poker-table>
     </div>
 </template>
@@ -38,7 +39,8 @@ export default {
       messages: [],
       player: {},
       playersOnline: {},
-      isCardsRevealed: false
+      isCardsRevealed: false,
+      gamesPlayed: []
     };
   },
   mounted() {
@@ -91,6 +93,7 @@ export default {
     },
     handleNewGame() {
       EventBus.$emit(Events.NEW_GAME_STARTED);
+      this.gamesPlayed.push(this.messages);
       this.messages = [];
       this.isCardsRevealed = false;
     },
@@ -146,5 +149,9 @@ export default {
 
 .full-height {
   height: 100%;
+}
+
+.u-ta-l {
+  text-align: left;
 }
 </style>
