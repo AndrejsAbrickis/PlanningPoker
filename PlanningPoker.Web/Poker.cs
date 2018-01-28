@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using PlanningPoker.Data.Constants;
+using PlanningPoker.Data.DTOs;
 
 namespace PlanningPoker.Web
 {
@@ -35,7 +37,7 @@ namespace PlanningPoker.Web
 
         public async Task Send(string message)
         {
-            var pokerMessage = new PokerMessage(Context.Connection.ConnectionId, message);
+            var pokerMessage = new PokerMessageDto(Context.Connection.ConnectionId, message);
 
             var user = await _userTracker.GetUser(Context.Connection);
             await Clients.Group(user.GroupId).InvokeAsync(HubEvents.Send, pokerMessage);
@@ -62,7 +64,7 @@ namespace PlanningPoker.Web
             await Clients.Group(user.GroupId).InvokeAsync(HubEvents.ShowCards);
         }
 
-        public async Task JoinGroup(GroupMessage groupMessage)
+        public async Task JoinGroup(GroupMessageDto groupMessage)
         {
             var user = await _userTracker.GetUser(Context.Connection);
             user.Name = groupMessage.PlayerName;
@@ -84,36 +86,5 @@ namespace PlanningPoker.Web
             await Clients.Group(groupName).InvokeAsync(HubEvents.LeaveGroup, groupName);
             await Groups.RemoveAsync(Context.ConnectionId, groupName);
         }
-    }
-
-    public class HubEvents
-    {
-        public const string Send = "Send";
-        public const string UsersJoined = "UsersJoined";
-        public const string Disconnected = "Disconnected";
-        public const string Connected = "Connected";
-        public const string JoinUser = "JoinUser";
-        public const string NewGame = "NewGame";
-        public const string ShowCards = "ShowCards";
-        public const string JoinGroup = "JoinGroup";
-        public const string LeaveGroup = "LeaveGroup";
-        public const string UpdateUser = "UpdateUser";
-    }
-
-    public class PokerMessage
-    {
-        public PokerMessage(string connectionId, string message)
-        {
-            ConnectionId = connectionId;
-            Message = message;
-        }
-        public string ConnectionId { get; }
-        public string Message { get; }
-    }
-
-    public class GroupMessage
-    {
-        public string PlayerName { get; set; }
-        public string GroupId { get; set; }
     }
 }
