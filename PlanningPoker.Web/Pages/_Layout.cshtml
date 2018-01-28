@@ -3,15 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - signalR_demo</title>
+    <title>@ViewData["Title"] - Planning Poker</title>
     <link href='~/css/normalize.css' rel='stylesheet' />
     <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet"/>
     <link href='~/css/vuetify.min.css' rel="stylesheet"/>
 </head>
 <body>
     @RenderBody()
-    <script src="~/js/manifest.bundle.js"></script>
-    <script src="~/js/app.bundle.js"></script>
-    @RenderSection("Scripts", required: false)
+    <script src="~/js/manifest.bundle.js" asp-append-version="true"></script>
+    <script src="~/js/app.bundle.js" asp-append-version="true"></script>
 </body>
 </html>

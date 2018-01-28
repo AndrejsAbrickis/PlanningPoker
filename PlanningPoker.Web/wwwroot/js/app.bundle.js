@@ -38642,7 +38642,7 @@ var render = function() {
     "div",
     { staticClass: "full-height", attrs: { id: "app" } },
     [
-      !_vm.joined ? _c("h2", [_vm._v("Planning Poker Vue APP")]) : _vm._e(),
+      !_vm.joined ? _c("h2", [_vm._v("Planning Poker")]) : _vm._e(),
       _vm._v(" "),
       !_vm.joined
         ? _c("login", { attrs: { join: _vm.joinGroup, player: _vm.player } })

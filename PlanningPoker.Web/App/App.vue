@@ -1,6 +1,6 @@
 <template>
     <div id="app" class="full-height">
-        <h2 v-if="!joined">Planning Poker Vue APP</h2>
+        <h2 v-if="!joined">Planning Poker</h2>
         <login v-if="!joined" :join="joinGroup" :player="player" />
         <poker-table v-if="joined" 
           :player="player" 
