@@ -1,74 +1,35 @@
 <template>
-    <div id="app">
-        <h2>Planning Poker Vue APP</h2>
-        <div v-if="joined">
-            <p>GroupId: {{ player.groupId }}</p>
-
-            <v-container fluid grid-list-md>
-                <v-layout row wrap>
-                    <v-flex xs10 offset-xs1>
-                        <players-online :players="playersOnline" />
-                    </v-flex>
-                    <v-flex xs10 offset-xs1>
-                        <cards-deck :playCard="playCard" />
-                        <v-layout row wrap>
-                            <v-flex xs12 v-if="messages.length > 0">
-                                <h3>Played cards</h3>
-                            </v-flex>
-                            <v-flex xs4 v-for="messageItem in messages" :key="messageItem.connectionId">
-                                <v-card class="lime lighten-3" @click="vote(card.value)">
-                                    <v-card-text>
-                                        {{ playersOnline[messageItem.connectionId].Name }}
-                                        <h4 v-show="isCardsRevealed">{{ messageItem.message }}</h4>
-                                    </v-card-text>
-                                </v-card>
-                            </v-flex>
-                        </v-layout>
-                    </v-flex>
-                </v-layout>
-                <v-layout row wrap>
-                    <v-flex xs10 offset-xs-1>
-                        <v-btn color="warning" dark @click="showCards()" v-if="!isCardsRevealed && messages.length > 0">Show cards</v-btn>
-                        <v-btn color="warning" dark @click="newGame()" v-if="isCardsRevealed">New game</v-btn>
-                    </v-flex>
-                </v-layout>
-            </v-container>
-        </div>
-
+    <div id="app" class="full-height">
+        <h2 v-if="!joined">Planning Poker Vue APP</h2>
         <login v-if="!joined" :join="joinGroup" :player="player" />
+        <poker-table v-if="joined" 
+          :player="player" 
+          :messages="messages" 
+          :playersOnline="playersOnline"
+          :playCard="playCard"
+          :isCardsRevealed="isCardsRevealed"
+          :showCards="showCards"
+          :newGame="newGame">
+        </poker-table>
     </div>
 </template>
 
 <script>
 import { HubConnection } from "@aspnet/signalr-client";
 import EventBus, { Events } from "./EventBus";
-import Login from "../Scripts/Login.vue";
-import PlayersOnline from "../Scripts/PlayersOnline.vue";
-import CardsDeck from "../Scripts/CardsDeck.vue";
+import HUB_EVENTS from "./HubEvents";
+import Login from "./Login.vue";
+import PokerTable from "./PokerTable.vue";
 
 const HUBS = {
   POKER: "/poker"
-};
-
-const HUB_EVENTS = {
-  Send: "Send",
-  UsersJoined: "UsersJoined",
-  Disconnected: "Disconnected",
-  Connected: "Connected",
-  JoinUser: "JoinUser",
-  NewGame: "NewGame",
-  ShowCards: "ShowCards",
-  JoinGroup: "JoinGroup",
-  LeaveGroup: "LeaveGroup",
-  UpdateUser: "UpdateUser"
 };
 
 export default {
   name: "app",
   components: {
     Login,
-    PlayersOnline,
-    CardsDeck
+    PokerTable
   },
   data() {
     return {
@@ -93,13 +54,9 @@ export default {
     this.pokerHub.on(HUB_EVENTS.ShowCards, this.handleShowCards);
     this.pokerHub.on(HUB_EVENTS.JoinGroup, this.handleJoinGroup);
     this.pokerHub.on(HUB_EVENTS.LeaveGroup, this.handleLeaveGroup);
-
-    // this.pokerHub.start();
   },
   methods: {
     handleConnected(usersOnline) {
-      console.warn(HUB_EVENTS.Connected);
-      console.log(usersOnline);
       usersOnline.forEach(user => {
         this.$set(this.playersOnline, user.connectionId, {
           Name: user.name || ""
@@ -107,8 +64,6 @@ export default {
       });
     },
     handleDisconnected(usersOnline) {
-      console.warn(HUB_EVENTS.Disconnected);
-      console.log(HUB_EVENTS.Disconnected);
       this.playersOnline = {};
 
       usersOnline.forEach(user => {
@@ -124,14 +79,10 @@ export default {
       this.pokerHub.invoke(HUB_EVENTS.Send, card);
     },
     handleUserJoined(user) {
-      console.warn(HUB_EVENTS.JoinUser);
-      console.log(user);
       this.joined = true;
       this.$set(this.playersOnline, user.connectionId, { Name: user.name });
     },
     handleSend(message) {
-      console.warn(HUB_EVENTS.Send);
-      console.log(message);
       this.messages.push(message);
       this.message = "";
     },
@@ -139,7 +90,6 @@ export default {
       this.pokerHub.invoke(HUB_EVENTS.NewGame);
     },
     handleNewGame() {
-      console.warn(HUB_EVENTS.NewGame);
       EventBus.$emit(Events.NEW_GAME_STARTED);
       this.messages = [];
       this.isCardsRevealed = false;
@@ -148,7 +98,6 @@ export default {
       this.pokerHub.invoke(HUB_EVENTS.ShowCards);
     },
     handleShowCards() {
-      console.warn(HUB_EVENTS.ShowCards);
       this.isCardsRevealed = true;
     },
     joinGroup(playerName, groupId) {
@@ -156,13 +105,13 @@ export default {
       this.pokerHub.invoke(HUB_EVENTS.JoinGroup, message);
 
       if (history.pushState) {
-        const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?groupId=${groupId}`;
+        const url = `${window.location.protocol}//${window.location.host}${
+          window.location.pathname
+        }?groupId=${groupId}`;
         window.history.pushState({ path: url }, "", url);
       }
     },
     handleJoinGroup(usersOnline) {
-      console.warn(HUB_EVENTS.JoinGroup);
-      console.log(usersOnline);
       this.playersOnline = {};
 
       usersOnline.forEach(user => {
@@ -175,8 +124,6 @@ export default {
       console.warn(HUB_EVENTS.LeaveGroup);
     },
     handleUpdateUser(user) {
-      console.warn(HUB_EVENTS.UpdateUser);
-      console.log(user);
       this.joined = true;
       this.player = user;
     }
@@ -191,6 +138,13 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 24px;
+}
+
+.no-padding {
+  padding: 0!important;
+}
+
+.full-height {
+  height: 100%;
 }
 </style>
