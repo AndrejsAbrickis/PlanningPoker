@@ -154,4 +154,8 @@ export default {
 .u-ta-l {
   text-align: left;
 }
+
+.u-pb-16 {
+  padding-bottom: 16px;
+}
 </style>

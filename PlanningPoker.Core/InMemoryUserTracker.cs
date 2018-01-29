@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using PlanningPoker.Data.DTOs;
 
-namespace PlanningPoker.Web
+namespace PlanningPoker.Core
 {
 
     public class InMemoryUserTracker<THub> : IUserTracker<THub>

@@ -14,30 +14,28 @@
                 </div>
             </v-flex>
         </div>
-        <div class="u-ps-16">
-            <games-stats :gamesPlayed="gamesPlayed" :players="playersOnline" v-if="gamesPlayed.length > 0"/>
-            <v-container fluid grid-list-md class="no-padding full-height">
-                <v-flex>
-                    <cards-deck :playCard="playCard" />
-                    <v-layout row wrap>
-                        <v-flex xs12 v-if="messages.length > 0">
-                            <h3>Played cards</h3>
-                        </v-flex>
-                        <v-flex xs4 v-for="messageItem in messages" :key="messageItem.connectionId">
-                            <v-card class="lime lighten-3">
-                                <v-card-text>
-                                    {{ playersOnline[messageItem.connectionId].Name }}
-                                    <h4 v-show="isCardsRevealed">{{ messageItem.message }}</h4>
-                                </v-card-text>
-                            </v-card>
-                        </v-flex>
-                        <v-flex xs10 offset-xs-1>
-                            <v-btn color="warning" dark @click="showCards()" v-if="!isCardsRevealed && messages.length > 0">Show cards</v-btn>
-                            <v-btn color="warning" dark @click="newGame()" v-if="isCardsRevealed">New game</v-btn>
-                        </v-flex>
-                    </v-layout>
-                </v-flex>
-            </v-container>
+        <div class="u-ps-16 u-d-flex u-fd-col">
+            <games-stats :gamesPlayed="gamesPlayed" :players="playersOnline" v-if="gamesPlayed.length > 0" />
+            <v-flex>
+                <v-layout row wrap>
+                    <v-flex xs12 v-if="messages.length > 0">
+                        <h3>Played cards</h3>
+                    </v-flex>
+                    <v-flex xs4 v-for="messageItem in messages" :key="messageItem.connectionId">
+                        <v-card class="lime lighten-3">
+                            <v-card-text>
+                                {{ playersOnline[messageItem.connectionId].Name }}
+                                <h4 v-show="isCardsRevealed">{{ messageItem.message }}</h4>
+                            </v-card-text>
+                        </v-card>
+                    </v-flex>
+                    <v-flex xs10 offset-xs-1>
+                        <v-btn color="warning" dark @click="showCards()" v-if="!isCardsRevealed && messages.length > 0">Show cards</v-btn>
+                        <v-btn color="warning" dark @click="newGame()" v-if="isCardsRevealed">New game</v-btn>
+                    </v-flex>
+                </v-layout>
+            </v-flex>
+            <cards-deck :playCard="playCard" class="u-mt-auto" />
         </div>
     </div>
 </template>
@@ -72,9 +70,9 @@ export default {
 
 <style scoped>
 .pp-grid {
-    display: grid;
-    grid-template-columns: 240px auto;
-    height: 100%;
+  display: grid;
+  grid-template-columns: 240px auto;
+  height: 100%;
 }
 
 .pp-sidebar {
@@ -93,7 +91,14 @@ export default {
 }
 
 .u-ps-16 {
-    padding-left: 16px;
-    padding-right: 16px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.u-d-flex {
+    display: flex;
+}
+.u-fd-col {
+    flex-direction: column;
 }
 </style>

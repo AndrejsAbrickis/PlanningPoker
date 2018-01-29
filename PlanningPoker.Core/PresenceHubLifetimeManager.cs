@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PlanningPoker.Data.DTOs;
 
-namespace PlanningPoker.Web
+namespace PlanningPoker.Core
 {
     public class DefaultPresenceHublifetimeManager<THub> : PresenceHubLifetimeManager<THub, DefaultHubLifetimeManager<THub>>
             where THub : HubWithPresence

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.SignalR;
 using PlanningPoker.Data.Constants;
 using PlanningPoker.Data.DTOs;
 
-namespace PlanningPoker.Web
+namespace PlanningPoker.Core
 {
     public class Poker : HubWithPresence
     {
