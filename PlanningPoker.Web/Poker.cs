@@ -24,7 +24,7 @@ namespace PlanningPoker.Web
             await base.OnConnectedAsync();
         }
 
-        public override async Task OnUsersLeft(UserDetails[] users)
+        public override async Task OnUsersLeft(UserDetailsDto[] users)
         {
             var user = await _userTracker.GetUser(Context.Connection);
             var usersOnline = await GetUsersOnline();

@@ -2,19 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using PlanningPoker.Data.DTOs;
 
 namespace PlanningPoker.Web
 {
     public interface IUserTracker<out THub>
     {
-        Task<IEnumerable<UserDetails>> UsersOnline();
-        Task<IEnumerable<UserDetails>> UsersOnline(string groupId);
-        Task<UserDetails> GetUser(HubConnectionContext connection);
-        Task AddUser(HubConnectionContext connection, UserDetails userDetails);
-        Task UpdateUser(HubConnectionContext connection, UserDetails userDetails);
+        Task<IEnumerable<UserDetailsDto>> UsersOnline();
+        Task<IEnumerable<UserDetailsDto>> UsersOnline(string groupId);
+        Task<UserDetailsDto> GetUser(HubConnectionContext connection);
+        Task AddUser(HubConnectionContext connection, UserDetailsDto userDetails);
+        Task UpdateUser(HubConnectionContext connection, UserDetailsDto userDetails);
         Task RemoveUser(HubConnectionContext connection);
 
-        event Action<UserDetails[]> UsersJoined;
-        event Action<UserDetails[]> UsersLeft;
+        event Action<UserDetailsDto[]> UsersJoined;
+        event Action<UserDetailsDto[]> UsersLeft;
     }
 }

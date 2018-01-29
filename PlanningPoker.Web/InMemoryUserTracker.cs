@@ -4,33 +4,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using PlanningPoker.Data.DTOs;
 
 namespace PlanningPoker.Web
 {
 
     public class InMemoryUserTracker<THub> : IUserTracker<THub>
     {
-        private readonly ConcurrentDictionary<HubConnectionContext, UserDetails> _usersOnline
-            = new ConcurrentDictionary<HubConnectionContext, UserDetails>();
+        private readonly ConcurrentDictionary<HubConnectionContext, UserDetailsDto> _usersOnline
+            = new ConcurrentDictionary<HubConnectionContext, UserDetailsDto>();
 
-        public event Action<UserDetails[]> UsersJoined;
-        public event Action<UserDetails[]> UsersLeft;
+        public event Action<UserDetailsDto[]> UsersJoined;
+        public event Action<UserDetailsDto[]> UsersLeft;
 
-        public Task<IEnumerable<UserDetails>> UsersOnline() => Task.FromResult(_usersOnline.Values.AsEnumerable());
+        public Task<IEnumerable<UserDetailsDto>> UsersOnline() => Task.FromResult(_usersOnline.Values.AsEnumerable());
 
-        public Task<IEnumerable<UserDetails>> UsersOnline(string groupId)
+        public Task<IEnumerable<UserDetailsDto>> UsersOnline(string groupId)
         {
             return Task.FromResult(_usersOnline.Values.Where(u => u.GroupId == groupId).AsEnumerable());
         }
 
-        public Task<UserDetails> GetUser(HubConnectionContext connection)
+        public Task<UserDetailsDto> GetUser(HubConnectionContext connection)
         {
             var user = _usersOnline.Values.FirstOrDefault( u => u.ConnectionId == connection.ConnectionId);
 
             return Task.FromResult(user);
         }
 
-        public Task AddUser(HubConnectionContext connection, UserDetails userDetails)
+        public Task AddUser(HubConnectionContext connection, UserDetailsDto userDetails)
         {
             _usersOnline.TryAdd(connection, userDetails);
             UsersJoined(new[] { userDetails });
@@ -38,7 +39,7 @@ namespace PlanningPoker.Web
             return Task.CompletedTask;
         }
 
-        public Task UpdateUser(HubConnectionContext connection, UserDetails userDetails)
+        public Task UpdateUser(HubConnectionContext connection, UserDetailsDto userDetails)
         {
             _usersOnline.AddOrUpdate(connection, userDetails, (oldKey, oldValue) => userDetails);
 

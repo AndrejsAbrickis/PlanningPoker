@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using PlanningPoker.Data.DTOs;
 
 namespace PlanningPoker.Web
 {
@@ -52,7 +53,7 @@ namespace PlanningPoker.Web
         {
             await _wrappedHubLifetimeManager.OnConnectedAsync(connection);
             _connections.Add(connection);
-            await _userTracker.AddUser(connection, new UserDetails(connection.ConnectionId, connection.User.Identity.Name, Guid.NewGuid().ToString()));
+            await _userTracker.AddUser(connection, new UserDetailsDto(connection.ConnectionId, connection.User.Identity.Name, Guid.NewGuid().ToString()));
         }
 
         public override async Task OnDisconnectedAsync(HubConnectionContext connection)
@@ -62,7 +63,7 @@ namespace PlanningPoker.Web
             await _userTracker.RemoveUser(connection);
         }
 
-        private async void OnUsersJoined(UserDetails[] users)
+        private async void OnUsersJoined(UserDetailsDto[] users)
         {
             await Notify(hub =>
             {
@@ -83,7 +84,7 @@ namespace PlanningPoker.Web
             });
         }
 
-        private async void OnUsersLeft(UserDetails[] users)
+        private async void OnUsersLeft(UserDetailsDto[] users)
         {
             await Notify(hub => hub.OnUsersLeft(users));
         }

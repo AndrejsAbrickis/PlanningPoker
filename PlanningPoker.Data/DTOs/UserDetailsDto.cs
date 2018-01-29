@@ -1,8 +1,8 @@
-namespace PlanningPoker.Web
+namespace PlanningPoker.Data.DTOs
 {
-    public class UserDetails
+    public class UserDetailsDto
     {
-        public UserDetails(string connectionId, string name, string groupId)
+        public UserDetailsDto(string connectionId, string name, string groupId)
         {
             ConnectionId = connectionId;
             Name = name;
