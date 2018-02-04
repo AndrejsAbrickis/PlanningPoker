@@ -17,8 +17,5 @@
   },
   "scripts": {
     "build": "webpack -w"
-  },
-  "dependencies": {
-    "bable-loader": "^0.0.1-security"
   }
 }

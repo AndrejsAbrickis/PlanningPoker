@@ -646,10 +646,6 @@ babel-types@^6.19.0, babel-types@^6.24.1, babel-types@^6.26.0:
     lodash "^4.17.4"
     to-fast-properties "^1.0.3"
 
-bable-loader@^0.0.1-security:
-  version "0.0.1-security"
-  resolved "https://registry.yarnpkg.com/bable-loader/-/bable-loader-0.0.1-security.tgz#d4e36f85e65a6a4f701c55cb0eb8925b0a046412"
-
 babylon@^6.18.0:
   version "6.18.0"
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.18.0.tgz#af2f3b88fa6f5c1e4c634d1a0f8eac4f55b395e3"
