@@ -15,20 +15,26 @@
         </div>
     </div>
 </template>
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue';
+import Component from 'vue-class-component';
+
+@Component({
   props: {
     players: Object,
     user: Object
-  },
-  computed: {
-    playersOnline() {
+  }
+})
+export default class PlayersOnline extends Vue {
+    players: any;
+    user: any;
+
+    get playersOnline(): any[] {
       return Object.keys(this.players)
         .filter(playerKey => playerKey != this.user.connectionId)
         .map(playerKey => this.players[playerKey]);
     }
-  }
-};
+}
 </script>
 
 <style scoped>

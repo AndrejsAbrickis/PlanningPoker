@@ -21,28 +21,31 @@
     </v-layout>
   </v-container>
 </template>
-<script>
-export default {
-  data() {
-    return {
-      valid: false,
-      playerName: "",
-      groupId: this.player.groupId
-    };
-  },
+<script lang="ts">
+import Vue from "vue";
+import Component from "vue-class-component";
+
+@Component({
   props: {
     join: Function,
     player: Object
-  },
+  }
+})
+export default class Login extends Vue {
+  join: any;
+  player: any;
+  groupId: any = this.player.groupId || "";
+  valid: boolean = false;
+  playerName: string = "";
+
   mounted() {
     this.groupId = new URLSearchParams(window.location.search).get("groupId");
-  },
-  methods: {
-    submit() {
-      if (this.valid) {
-        this.join(this.playerName, this.groupId);
-      }
+  }
+
+  submit() {
+    if (this.valid) {
+      this.join(this.playerName, this.groupId);
     }
   }
-};
+}
 </script>

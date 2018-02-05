@@ -39,12 +39,14 @@
         </div>
     </div>
 </template>
-<script>
+<script lang="ts">
+import Vue from "vue";
+import Component from "vue-class-component";
 import PlayersOnline from "./PlayersOnline.vue";
 import CardsDeck from "./CardsDeck.vue";
 import GamesStats from "./GamesStats.vue";
 
-export default {
+@Component({
   components: {
     PlayersOnline,
     CardsDeck,
@@ -59,13 +61,9 @@ export default {
     showCards: Function,
     newGame: Function,
     gamesPlayed: Array
-  },
-  data() {
-    return {
-      title: " Hello Table!"
-    };
   }
-};
+})
+export default class PokerTable extends Vue {}
 </script>
 
 <style scoped>
@@ -96,9 +94,9 @@ export default {
 }
 
 .u-d-flex {
-    display: flex;
+  display: flex;
 }
 .u-fd-col {
-    flex-direction: column;
+  flex-direction: column;
 }
 </style>
