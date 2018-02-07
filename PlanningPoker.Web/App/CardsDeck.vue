@@ -42,7 +42,7 @@ const CARDS = [
 export default class GamesStats extends Vue {
   cards: any[] = CARDS;
   hasVoted: boolean = false;
-  playCard = this.playCard;
+  playCard: any;
 
   mounted(): void {
     EventBus.$on(Events.NEW_GAME_STARTED, this.newGame);

@@ -18386,7 +18386,6 @@ var GamesStats = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.cards = CARDS;
         _this.hasVoted = false;
-        _this.playCard = _this.playCard;
         return _this;
     }
     GamesStats.prototype.mounted = function () {
