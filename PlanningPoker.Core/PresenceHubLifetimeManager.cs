@@ -104,7 +104,6 @@ namespace PlanningPoker.Core
                         _hubContext = _serviceProvider.GetRequiredService<IHubContext<THub>>();
                     }
 
-                    hub.Clients = _hubContext.Clients;
                     hub.Context = new HubCallerContext(connection);
                     hub.Groups = _hubContext.Groups;
 
@@ -130,29 +129,29 @@ namespace PlanningPoker.Core
             _userTracker.UsersLeft -= OnUsersLeft;
         }
 
-        public override Task InvokeAllAsync(string methodName, object[] args)
+        public override Task SendAllAsync(string methodName, object[] args)
         {
-            return _wrappedHubLifetimeManager.InvokeAllAsync(methodName, args);
+            return _wrappedHubLifetimeManager.SendAllAsync(methodName, args);
         }
 
-        public override Task InvokeAllExceptAsync(string methodName, object[] args, IReadOnlyList<string> excludedIds)
+        public override Task SendAllExceptAsync(string methodName, object[] args, IReadOnlyList<string> excludedIds)
         {
-            return _wrappedHubLifetimeManager.InvokeAllExceptAsync(methodName, args, excludedIds);
+            return _wrappedHubLifetimeManager.SendAllExceptAsync(methodName, args, excludedIds);
         }
 
-        public override Task InvokeConnectionAsync(string connectionId, string methodName, object[] args)
+        public override Task SendConnectionAsync(string connectionId, string methodName, object[] args)
         {
-            return _wrappedHubLifetimeManager.InvokeConnectionAsync(connectionId, methodName, args);
+            return _wrappedHubLifetimeManager.SendConnectionAsync(connectionId, methodName, args);
         }
 
-        public override Task InvokeGroupAsync(string groupName, string methodName, object[] args)
+        public override Task SendGroupAsync(string groupName, string methodName, object[] args)
         {
-            return _wrappedHubLifetimeManager.InvokeGroupAsync(groupName, methodName, args);
+            return _wrappedHubLifetimeManager.SendGroupAsync(groupName, methodName, args);
         }
 
-        public override Task InvokeUserAsync(string userId, string methodName, object[] args)
+        public override Task SendUserAsync(string userId, string methodName, object[] args)
         {
-            return _wrappedHubLifetimeManager.InvokeUserAsync(userId, methodName, args);
+            return _wrappedHubLifetimeManager.SendUserAsync(userId, methodName, args);
         }
 
         public override Task AddGroupAsync(string connectionId, string groupName)
@@ -163,6 +162,26 @@ namespace PlanningPoker.Core
         public override Task RemoveGroupAsync(string connectionId, string groupName)
         {
             return _wrappedHubLifetimeManager.RemoveGroupAsync(connectionId, groupName);
+        }
+
+        public override Task SendConnectionsAsync(IReadOnlyList<string> connectionIds, string methodName, object[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task SendGroupsAsync(IReadOnlyList<string> groupNames, string methodName, object[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task SendGroupExceptAsync(string groupName, string methodName, object[] args, IReadOnlyList<string> excludedIds)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task SendUsersAsync(IReadOnlyList<string> userIds, string methodName, object[] args)
+        {
+            throw new NotImplementedException();
         }
     }
 }
