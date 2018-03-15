@@ -1,7 +1,7 @@
 {
   "license": "MIT",
   "devDependencies": {
-    "@aspnet/signalr-client": "^1.0.0-alpha2-final",
+    "@aspnet/signalr": "^1.0.0-preview1-30037",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-class-properties": "^6.24.1",
@@ -10,7 +10,7 @@
     "css-loader": "^0.28.9",
     "normalize.css": "^7.0.0",
     "ts-loader": "^3.4.0",
-    "typescript": "^2.7.1",
+    "typescript": "^2.7.2",
     "vue": "^2.5.13",
     "vue-class-component": "^6.1.2",
     "vue-loader": "^14.1.1",

@@ -2,7 +2,8 @@
     <div id="app" class="full-height">
         <h2 v-if="!joined">Planning Poker</h2>
         <login v-if="!joined" :join="joinGroup" :player="player" />
-        <poker-table v-if="joined" 
+        <poker-table
+          v-if="joined" 
           :player="player" 
           :messages="messages" 
           :playersOnline="playersOnline"
@@ -16,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { HubConnection } from "@aspnet/signalr-client";
+import { HubConnection } from "@aspnet/signalr";
 import EventBus, { Events } from "./EventBus";
 import HUB_EVENTS from "./HubEvents";
 import Login from "./Login.vue";
