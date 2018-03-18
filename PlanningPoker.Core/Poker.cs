@@ -19,7 +19,7 @@ namespace PlanningPoker.Core
             var usersOnline = await GetUsersOnline();
             var groupUsersOnline = usersOnline.Where(u => u.GroupId == user.GroupId);
 
-            await Clients.Client(Context.ConnectionId).InvokeAsync(HubEvents.Connected, groupUsersOnline);
+            await Clients.Client(Context.ConnectionId).SendAsync(HubEvents.Connected, groupUsersOnline);
 
             await base.OnConnectedAsync();
         }
@@ -30,7 +30,7 @@ namespace PlanningPoker.Core
             var usersOnline = await GetUsersOnline();
             var groupUsersOnline = usersOnline.Where(u => u.GroupId == user.GroupId);
 
-            await Clients.Group(user.GroupId).InvokeAsync(HubEvents.Disconnected, groupUsersOnline);
+            await Clients.Group(user.GroupId).SendAsync(HubEvents.Disconnected, groupUsersOnline);
 
             await base.OnUsersLeft(users);
         }
@@ -40,7 +40,7 @@ namespace PlanningPoker.Core
             var pokerMessage = new PokerMessageDto(Context.Connection.ConnectionId, message);
 
             var user = await _userTracker.GetUser(Context.Connection);
-            await Clients.Group(user.GroupId).InvokeAsync(HubEvents.Send, pokerMessage);
+            await Clients.Group(user.GroupId).SendAsync(HubEvents.Send, pokerMessage);
         }
 
         public async Task JoinUser(string userName)
@@ -49,19 +49,19 @@ namespace PlanningPoker.Core
             user.Name = userName;
 
             await _userTracker.UpdateUser(Context.Connection, user);
-            await Clients.Group(user.GroupId).InvokeAsync(HubEvents.JoinUser, user);
+            await Clients.Group(user.GroupId).SendAsync(HubEvents.JoinUser, user);
         }
 
         public async Task NewGame()
         {
             var user = await _userTracker.GetUser(Context.Connection);
-            await Clients.Group(user.GroupId).InvokeAsync(HubEvents.NewGame);
+            await Clients.Group(user.GroupId).SendAsync(HubEvents.NewGame);
         }
 
         public async Task ShowCards()
         {
             var user = await _userTracker.GetUser(Context.Connection);
-            await Clients.Group(user.GroupId).InvokeAsync(HubEvents.ShowCards);
+            await Clients.Group(user.GroupId).SendAsync(HubEvents.ShowCards);
         }
 
         public async Task JoinGroup(GroupMessageDto groupMessage)
@@ -77,13 +77,13 @@ namespace PlanningPoker.Core
 
             await _userTracker.UpdateUser(Context.Connection, user);
             await Groups.AddAsync(Context.ConnectionId, groupId);
-            await Clients.Group(groupId).InvokeAsync(HubEvents.JoinGroup, groupUsersOnline);
-            await Clients.Client(Context.ConnectionId).InvokeAsync(HubEvents.UpdateUser, user);
+            await Clients.Group(groupId).SendAsync(HubEvents.JoinGroup, groupUsersOnline);
+            await Clients.Client(Context.ConnectionId).SendAsync(HubEvents.UpdateUser, user);
         }
 
         public async Task LeaveGroup(string groupName)
         {
-            await Clients.Group(groupName).InvokeAsync(HubEvents.LeaveGroup, groupName);
+            await Clients.Group(groupName).SendAsync(HubEvents.LeaveGroup, groupName);
             await Groups.RemoveAsync(Context.ConnectionId, groupName);
         }
     }

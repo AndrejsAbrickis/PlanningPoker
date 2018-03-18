@@ -1,21 +1,28 @@
 {
   "license": "MIT",
   "devDependencies": {
-    "@aspnet/signalr-client": "^1.0.0-alpha1-final",
+    "@aspnet/signalr": "^1.0.0-preview1-30037",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.6.0",
-    "css-loader": "^0.28.7",
+    "babel-preset-env": "^1.6.1",
+    "css-loader": "^0.28.9",
+    "node-sass": "^4.7.2",
     "normalize.css": "^7.0.0",
-    "vue": "^2.4.4",
-    "vue-loader": "^13.0.5",
-    "vue-resource": "^1.3.4",
-    "vue-template-compiler": "^2.4.4",
-    "vuetify": "^0.17.4",
-    "webpack": "^3.6.0"
+    "sass-loader": "^6.0.7",
+    "ts-loader": "^3.4.0",
+    "typescript": "^2.7.2",
+    "vue": "^2.5.13",
+    "vue-class-component": "^6.1.2",
+    "vue-loader": "^14.1.1",
+    "vue-property-decorator": "^6.0.0",
+    "vue-resource": "^1.3.5",
+    "vue-template-compiler": "^2.5.13",
+    "vuetify": "^0.17.7",
+    "webpack": "^3.10.0"
   },
   "scripts": {
-    "build": "webpack -w"
+    "start": "webpack -w"
   }
 }

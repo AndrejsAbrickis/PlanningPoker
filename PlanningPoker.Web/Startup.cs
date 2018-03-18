@@ -42,7 +42,7 @@ namespace PlanningPoker.Web
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<Poker>(typeof(Poker).Name.ToLower());
+                routes.MapHub<Poker>($"/{typeof(Poker).Name.ToLower()}");
             });
 
             app.UseMvc(routes =>

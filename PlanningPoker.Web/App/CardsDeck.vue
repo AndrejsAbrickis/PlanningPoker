@@ -14,7 +14,9 @@
         </v-container>
     </div>
 </template>
-<script>
+<script lang="ts">
+import Vue from "vue";
+import Component from "vue-class-component";
 import EventBus, { Events } from "./EventBus";
 
 const CARDS = [
@@ -32,27 +34,27 @@ const CARDS = [
   { value: 999999, label: "?" }
 ];
 
-export default {
-  data() {
-    return {
-      cards: CARDS,
-      hasVoted: false
-    };
-  },
+@Component({
   props: {
     playCard: Function
-  },
-  mounted() {
-    EventBus.$on(Events.NEW_GAME_STARTED, this.newGame);
-  },
-  methods: {
-    vote(card) {
-      this.hasVoted = true;
-      this.playCard(card);
-    },
-    newGame() {
-      this.hasVoted = false;
-    }
   }
-};
+})
+export default class GamesStats extends Vue {
+  cards: any[] = CARDS;
+  hasVoted: boolean = false;
+  playCard: any;
+
+  mounted(): void {
+    EventBus.$on(Events.NEW_GAME_STARTED, this.newGame);
+  }
+
+  vote(card: any): void {
+    this.hasVoted = true;
+    this.playCard(card);
+  }
+
+  newGame(): void {
+    this.hasVoted = false;
+  }
+}
 </script>

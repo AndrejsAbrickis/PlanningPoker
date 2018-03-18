@@ -18,18 +18,22 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from "vue";
+import Component from "vue-class-component";
+
+@Component({
   props: {
     gamesPlayed: Array,
     players: Object
   }
-};
+})
+export default class GamesStats extends Vue {}
 </script>
 <style>
 .index {
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 40px;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 40px;
 }
 </style>
