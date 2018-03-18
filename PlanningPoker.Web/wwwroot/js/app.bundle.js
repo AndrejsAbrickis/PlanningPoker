@@ -11906,8 +11906,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var PokerTable = /** @class */ (function (_super) {
     __extends(PokerTable, _super);
     function PokerTable() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.showSidebar = false;
+        return _this;
     }
+    PokerTable.prototype.ToggleSidebar = function () {
+        this.showSidebar = !this.showSidebar;
+    };
     PokerTable = __decorate([
         __WEBPACK_IMPORTED_MODULE_1_vue_class_component___default()({
             components: {
@@ -32377,13 +32382,13 @@ if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
 var add = __webpack_require__(4).default
-var update = add("a084f5b8", content, false, {});
+var update = add("3fe651be", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
  if(!content.locals) {
-   module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-c85095fa\",\"scoped\":true,\"sourceMap\":false}!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./PokerTable.vue", function() {
-     var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-c85095fa\",\"scoped\":true,\"sourceMap\":false}!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./PokerTable.vue");
+   module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-c85095fa\",\"scoped\":true,\"sourceMap\":false}!../node_modules/sass-loader/lib/loader.js!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./PokerTable.vue", function() {
+     var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-c85095fa\",\"scoped\":true,\"sourceMap\":false}!../node_modules/sass-loader/lib/loader.js!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./PokerTable.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });
@@ -32401,7 +32406,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n.pp-grid[data-v-c85095fa] {\n  display: grid;\n  grid-template-columns: 240px auto;\n  height: 100%;\n}\n.pp-sidebar[data-v-c85095fa] {\n  display: flex;\n  flex-direction: column;\n  height: 100%;\n}\n.h3[data-v-c85095fa] {\n  text-transform: uppercase;\n  font-size: 24px;\n}\n.u-mt-auto[data-v-c85095fa] {\n  margin-top: auto;\n}\n.u-ps-16[data-v-c85095fa] {\n  padding-left: 16px;\n  padding-right: 16px;\n}\n.u-d-flex[data-v-c85095fa] {\n  display: flex;\n}\n.u-fd-col[data-v-c85095fa] {\n  flex-direction: column;\n}\n", ""]);
+exports.push([module.i, "\n@media screen and (min-width: 576px) {\n.pp-grid[data-v-c85095fa] {\n    display: grid;\n    grid-template-columns: 240px auto;\n    height: 100%;\n}\n}\n@media screen and (min-width: 576px) {\n.pp-header[data-v-c85095fa] {\n    display: none;\n}\n}\n.pp-header-menu-toggler[data-v-c85095fa] {\n  margin: 0;\n  padding: 12px;\n}\n.pp-sidebar[data-v-c85095fa] {\n  bottom: 0;\n  display: flex;\n  flex-direction: column;\n  left: -240px;\n  position: absolute;\n  top: 0;\n  width: 240px;\n  z-index: 1;\n}\n.pp-sidebar.visible[data-v-c85095fa] {\n    left: 0;\n}\n@media screen and (min-width: 576px) {\n.pp-sidebar[data-v-c85095fa] {\n      left: 0;\n      position: relative;\n      width: 100%;\n}\n}\n.pp-sidebar-close[data-v-c85095fa] {\n    padding: 11px;\n    position: absolute;\n    right: 0;\n}\n@media screen and (min-width: 576px) {\n.pp-sidebar-close[data-v-c85095fa] {\n        display: none;\n}\n}\n.h3[data-v-c85095fa] {\n  text-transform: uppercase;\n  font-size: 24px;\n}\n.u-mt-auto[data-v-c85095fa] {\n  margin-top: auto;\n}\n.u-ps-16[data-v-c85095fa] {\n  padding-left: 16px;\n  padding-right: 16px;\n}\n.u-d-flex[data-v-c85095fa] {\n  display: flex;\n}\n.u-fd-col[data-v-c85095fa] {\n  flex-direction: column;\n}\n.u-ta-l[data-v-c85095fa] {\n  text-align: left;\n}\n", ""]);
 
 // exports
 
@@ -32884,203 +32889,225 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "pp-grid" }, [
-    _c(
-      "div",
-      [
+  return _c(
+    "div",
+    { staticClass: "pp-grid" },
+    [
+      _c("div", { staticClass: "pp-header u-ta-l" }, [
         _c(
-          "v-flex",
-          { staticClass: "grey lighten-4 pp-sidebar" },
-          [
-            _c("h3", { staticClass: "h3" }, [
-              _vm._v(_vm._s(_vm.player.groupId))
+          "button",
+          {
+            staticClass: "pp-header-menu-toggler",
+            attrs: { type: "button" },
+            on: { click: _vm.ToggleSidebar }
+          },
+          [_c("i", { staticClass: "material-icons" }, [_vm._v("menu")])]
+        )
+      ]),
+      _vm._v(" "),
+      _c(
+        "v-flex",
+        {
+          staticClass: "grey lighten-4 pp-sidebar",
+          class: { visible: _vm.showSidebar }
+        },
+        [
+          _c(
+            "button",
+            {
+              staticClass: "pp-sidebar-close",
+              attrs: { type: "button" },
+              on: { click: _vm.ToggleSidebar }
+            },
+            [_c("i", { staticClass: "material-icons" }, [_vm._v("close")])]
+          ),
+          _vm._v(" "),
+          _c("h3", { staticClass: "h3" }, [_vm._v(_vm._s(_vm.player.groupId))]),
+          _vm._v(" "),
+          _c("players-online", {
+            attrs: { user: _vm.player, players: _vm.playersOnline }
+          }),
+          _vm._v(" "),
+          _c("div", { staticClass: "u-mt-auto" }, [
+            _c("p", { staticClass: "text-xs-center mt-5" }, [
+              _vm._v("\n                Made by "),
+              _c(
+                "a",
+                {
+                  attrs: {
+                    href: "https://www.abrickis.me",
+                    target: "_blank",
+                    title: "Andrejs Abrickis | abrickis.me"
+                  }
+                },
+                [_vm._v("Andrejs Abrickis")]
+              )
             ]),
             _vm._v(" "),
-            _c("players-online", {
-              attrs: { user: _vm.player, players: _vm.playersOnline }
-            }),
-            _vm._v(" "),
-            _c("div", { staticClass: "u-mt-auto" }, [
-              _c("p", { staticClass: "text-xs-center mt-5" }, [
-                _vm._v("\n                    Made by "),
-                _c(
-                  "a",
-                  {
-                    attrs: {
-                      href: "https://www.abrickis.me",
-                      target: "_blank",
-                      title: "Andrejs Abrickis | abrickis.me"
-                    }
-                  },
-                  [_vm._v("Andrejs Abrickis")]
-                )
-              ]),
-              _vm._v(" "),
-              _c("p", { staticClass: "text-xs-center" }, [
-                _c(
-                  "a",
-                  {
-                    attrs: {
-                      href:
-                        "https://github.com/AndrejsAbrickis/signalR-vuejs-demo",
-                      target: "_blank"
-                    }
-                  },
-                  [
-                    _c(
-                      "svg",
-                      {
-                        attrs: {
-                          width: "32px",
-                          "aria-labelledby": "simpleicons-github-icon",
-                          role: "img",
-                          viewBox: "0 0 24 24",
-                          xmlns: "http://www.w3.org/2000/svg"
-                        }
-                      },
-                      [
-                        _c(
-                          "title",
-                          { attrs: { id: "simpleicons-github-icon" } },
-                          [_vm._v("GitHub icon")]
-                        ),
-                        _c("path", {
-                          attrs: {
-                            d:
-                              "M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
-                          }
-                        })
-                      ]
-                    )
-                  ]
-                )
-              ])
-            ])
-          ],
-          1
-        )
-      ],
-      1
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "u-ps-16 u-d-flex u-fd-col" },
-      [
-        _vm.gamesPlayed.length > 0
-          ? _c("games-stats", {
-              attrs: {
-                gamesPlayed: _vm.gamesPlayed,
-                players: _vm.playersOnline
-              }
-            })
-          : _vm._e(),
-        _vm._v(" "),
-        _c(
-          "v-flex",
-          [
-            _c(
-              "v-layout",
-              { attrs: { row: "", wrap: "" } },
-              [
-                _vm.messages.length > 0
-                  ? _c("v-flex", { attrs: { xs12: "" } }, [
-                      _c("h3", [_vm._v("Played cards")])
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm._l(_vm.messages, function(messageItem) {
-                  return _c(
-                    "v-flex",
-                    { key: messageItem.connectionId, attrs: { xs4: "" } },
+            _c("p", { staticClass: "text-xs-center" }, [
+              _c(
+                "a",
+                {
+                  attrs: {
+                    href:
+                      "https://github.com/AndrejsAbrickis/signalR-vuejs-demo",
+                    target: "_blank"
+                  }
+                },
+                [
+                  _c(
+                    "svg",
+                    {
+                      attrs: {
+                        width: "32px",
+                        "aria-labelledby": "simpleicons-github-icon",
+                        role: "img",
+                        viewBox: "0 0 24 24",
+                        xmlns: "http://www.w3.org/2000/svg"
+                      }
+                    },
                     [
                       _c(
-                        "v-card",
-                        { staticClass: "lime lighten-3" },
-                        [
-                          _c("v-card-text", [
-                            _vm._v(
-                              "\n                            " +
-                                _vm._s(
-                                  _vm.playersOnline[messageItem.connectionId]
-                                    .Name
-                                ) +
-                                "\n                            "
-                            ),
-                            _c(
-                              "h4",
-                              {
-                                directives: [
-                                  {
-                                    name: "show",
-                                    rawName: "v-show",
-                                    value: _vm.isCardsRevealed,
-                                    expression: "isCardsRevealed"
-                                  }
-                                ]
-                              },
-                              [_vm._v(_vm._s(messageItem.message))]
-                            )
-                          ])
-                        ],
-                        1
-                      )
+                        "title",
+                        { attrs: { id: "simpleicons-github-icon" } },
+                        [_vm._v("GitHub icon")]
+                      ),
+                      _c("path", {
+                        attrs: {
+                          d:
+                            "M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+                        }
+                      })
+                    ]
+                  )
+                ]
+              )
+            ])
+          ])
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "u-ps-16 u-d-flex u-fd-col" },
+        [
+          _vm.gamesPlayed.length > 0
+            ? _c("games-stats", {
+                attrs: {
+                  gamesPlayed: _vm.gamesPlayed,
+                  players: _vm.playersOnline
+                }
+              })
+            : _vm._e(),
+          _vm._v(" "),
+          _c(
+            "v-flex",
+            [
+              _c(
+                "v-layout",
+                { attrs: { row: "", wrap: "" } },
+                [
+                  _vm.messages.length > 0
+                    ? _c("v-flex", { attrs: { xs12: "" } }, [
+                        _c("h3", [_vm._v("Played cards")])
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm._l(_vm.messages, function(messageItem) {
+                    return _c(
+                      "v-flex",
+                      { key: messageItem.connectionId, attrs: { xs4: "" } },
+                      [
+                        _c(
+                          "v-card",
+                          { staticClass: "lime lighten-3" },
+                          [
+                            _c("v-card-text", [
+                              _vm._v(
+                                "\n                            " +
+                                  _vm._s(
+                                    _vm.playersOnline[messageItem.connectionId]
+                                      .Name
+                                  ) +
+                                  "\n                            "
+                              ),
+                              _c(
+                                "h4",
+                                {
+                                  directives: [
+                                    {
+                                      name: "show",
+                                      rawName: "v-show",
+                                      value: _vm.isCardsRevealed,
+                                      expression: "isCardsRevealed"
+                                    }
+                                  ]
+                                },
+                                [_vm._v(_vm._s(messageItem.message))]
+                              )
+                            ])
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "v-flex",
+                    { attrs: { xs10: "", "offset-xs-1": "" } },
+                    [
+                      !_vm.isCardsRevealed && _vm.messages.length > 0
+                        ? _c(
+                            "v-btn",
+                            {
+                              attrs: { color: "warning", dark: "" },
+                              on: {
+                                click: function($event) {
+                                  _vm.showCards()
+                                }
+                              }
+                            },
+                            [_vm._v("Show cards")]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.isCardsRevealed
+                        ? _c(
+                            "v-btn",
+                            {
+                              attrs: { color: "warning", dark: "" },
+                              on: {
+                                click: function($event) {
+                                  _vm.newGame()
+                                }
+                              }
+                            },
+                            [_vm._v("New game")]
+                          )
+                        : _vm._e()
                     ],
                     1
                   )
-                }),
-                _vm._v(" "),
-                _c(
-                  "v-flex",
-                  { attrs: { xs10: "", "offset-xs-1": "" } },
-                  [
-                    !_vm.isCardsRevealed && _vm.messages.length > 0
-                      ? _c(
-                          "v-btn",
-                          {
-                            attrs: { color: "warning", dark: "" },
-                            on: {
-                              click: function($event) {
-                                _vm.showCards()
-                              }
-                            }
-                          },
-                          [_vm._v("Show cards")]
-                        )
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.isCardsRevealed
-                      ? _c(
-                          "v-btn",
-                          {
-                            attrs: { color: "warning", dark: "" },
-                            on: {
-                              click: function($event) {
-                                _vm.newGame()
-                              }
-                            }
-                          },
-                          [_vm._v("New game")]
-                        )
-                      : _vm._e()
-                  ],
-                  1
-                )
-              ],
-              2
-            )
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c("cards-deck", {
-          staticClass: "u-mt-auto",
-          attrs: { playCard: _vm.playCard }
-        })
-      ],
-      1
-    )
-  ])
+                ],
+                2
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("cards-deck", {
+            staticClass: "u-mt-auto",
+            attrs: { playCard: _vm.playCard }
+          })
+        ],
+        1
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

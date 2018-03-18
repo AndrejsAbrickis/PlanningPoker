@@ -8,7 +8,9 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "css-loader": "^0.28.9",
+    "node-sass": "^4.7.2",
     "normalize.css": "^7.0.0",
+    "sass-loader": "^6.0.7",
     "ts-loader": "^3.4.0",
     "typescript": "^2.7.2",
     "vue": "^2.5.13",
@@ -21,6 +23,6 @@
     "webpack": "^3.10.0"
   },
   "scripts": {
-    "build": "webpack -w"
+    "start": "webpack -w"
   }
 }

@@ -15,6 +15,11 @@ module.exports = {
             'vue$': 'vue/dist/vue',
         }
     },
+    resolveLoader: {
+        alias: {
+            'scss-loader': 'sass-loader',
+        },
+    },
     module: {
         loaders: [
             {
@@ -35,13 +40,17 @@ module.exports = {
                 test: /\.js$/,
                 loader: 'babel-loader',
                 exclude: /node_modules/,
+            },
+            {
+                test: /\.s[a|c]ss$/,
+                loader: 'style!css!sass'
             }
         ]
     },
     plugins: [
-    new webpack.optimize.CommonsChunkPlugin({
-      name: ["manifest"],
-      minChunks: Infinity,
-    })
+        new webpack.optimize.CommonsChunkPlugin({
+            name: ["manifest"],
+            minChunks: Infinity,
+        })
     ]
 };
