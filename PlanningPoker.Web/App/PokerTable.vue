@@ -30,7 +30,7 @@
                     <v-flex xs4 v-for="messageItem in messages" :key="messageItem.connectionId">
                         <v-card class="lime lighten-3">
                             <v-card-text>
-                                {{ playersOnline[messageItem.connectionId].Name }}
+                                {{ GetName(messageItem.connectionId) }}
                                 <h4 v-show="isCardsRevealed">{{ messageItem.message }}</h4>
                             </v-card-text>
                         </v-card>
@@ -70,11 +70,16 @@ import GamesStats from "./GamesStats.vue";
   }
 })
 export default class PokerTable extends Vue {
-  showSidebar: boolean = false;
+    showSidebar: boolean = false;
+    playersOnline: any = this.playersOnline;
 
-  ToggleSidebar(): void {
+    ToggleSidebar(): void {
     this.showSidebar = !this.showSidebar;
-  }
+    }
+
+    GetName(connectionId: string): string {
+        return this.playersOnline[connectionId] !=null ? this.playersOnline[connectionId].Name : 'NoName';
+    }
 }
 </script>
 

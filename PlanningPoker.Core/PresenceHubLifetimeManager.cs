@@ -106,6 +106,7 @@ namespace PlanningPoker.Core
 
                     hub.Context = new HubCallerContext(connection);
                     hub.Groups = _hubContext.Groups;
+                    hub.Clients = new HubCallerClients(_hubContext.Clients, connection.ConnectionId);
 
                     try
                     {

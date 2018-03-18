@@ -11908,10 +11908,14 @@ var PokerTable = /** @class */ (function (_super) {
     function PokerTable() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.showSidebar = false;
+        _this.playersOnline = _this.playersOnline;
         return _this;
     }
     PokerTable.prototype.ToggleSidebar = function () {
         this.showSidebar = !this.showSidebar;
+    };
+    PokerTable.prototype.GetName = function (connectionId) {
+        return this.playersOnline[connectionId] != null ? this.playersOnline[connectionId].Name : 'NoName';
     };
     PokerTable = __decorate([
         __WEBPACK_IMPORTED_MODULE_1_vue_class_component___default()({
@@ -33027,8 +33031,7 @@ var render = function() {
                               _vm._v(
                                 "\n                            " +
                                   _vm._s(
-                                    _vm.playersOnline[messageItem.connectionId]
-                                      .Name
+                                    _vm.GetName(messageItem.connectionId)
                                   ) +
                                   "\n                            "
                               ),
