@@ -11,7 +11,7 @@
     "node-sass": "^4.7.2",
     "normalize.css": "^8.0.0",
     "sass-loader": "^6.0.7",
-    "ts-loader": "^3.4.0",
+    "ts-loader": "^4.1.0",
     "typescript": "^2.7.2",
     "vue": "^2.5.16",
     "vue-class-component": "^6.2.0",
@@ -20,7 +20,8 @@
     "vue-resource": "^1.5.0",
     "vue-template-compiler": "^2.5.16",
     "vuetify": "^1.0.8",
-    "webpack": "^3.10.0"
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.12"
   },
   "scripts": {
     "start": "webpack -w"
