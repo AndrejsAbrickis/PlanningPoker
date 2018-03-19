@@ -22,7 +22,7 @@
         </v-flex>
         <div class="u-ps-16 u-d-flex u-fd-col">
             <games-stats :gamesPlayed="gamesPlayed" :players="playersOnline" v-if="gamesPlayed.length > 0" />
-            <v-flex>
+            <v-container fluid grid-list-md class="u-pb-16">
                 <v-layout row wrap>
                     <v-flex xs12 v-if="messages.length > 0">
                         <h3>Played cards</h3>
@@ -40,7 +40,7 @@
                         <v-btn color="warning" dark @click="newGame()" v-if="isCardsRevealed">New game</v-btn>
                     </v-flex>
                 </v-layout>
-            </v-flex>
+            </v-container>
             <cards-deck :playCard="playCard" class="u-mt-auto" />
         </div>
     </div>
