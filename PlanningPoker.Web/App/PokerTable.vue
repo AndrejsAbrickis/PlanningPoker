@@ -113,7 +113,7 @@ $break-small: 576px;
   position: absolute;
   top: 0;
   width: 240px;
-  z-index: 1;
+  z-index: 100;
 
   &.visible {
     left: 0;
