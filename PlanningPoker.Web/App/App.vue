@@ -1,4 +1,5 @@
 <template>
+  <v-app>
     <div id="app" class="full-height">
         <h2 v-if="!joined">Planning Poker</h2>
         <login v-if="!joined" :join="joinGroup" :player="player" />
@@ -14,6 +15,7 @@
           :gamesPlayed="gamesPlayed">
         </poker-table>
     </div>
+  </v-app>
 </template>
 
 <script lang="ts">

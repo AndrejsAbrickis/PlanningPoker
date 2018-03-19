@@ -21,7 +21,7 @@ module.exports = {
         },
     },
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.ts$/,
                 exclude: /node_modules|vue\/src/,
@@ -46,11 +46,5 @@ module.exports = {
                 loader: 'style!css!sass'
             }
         ]
-    },
-    plugins: [
-        new webpack.optimize.CommonsChunkPlugin({
-            name: ["manifest"],
-            minChunks: Infinity,
-        })
-    ]
+    }
 };
