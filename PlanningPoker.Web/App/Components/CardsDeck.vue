@@ -17,7 +17,7 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import EventBus, { Events } from "./EventBus";
+import EventBus, { Events } from "../Services/EventBus";
 
 const CARDS = [
   { value: 0, label: "0" },

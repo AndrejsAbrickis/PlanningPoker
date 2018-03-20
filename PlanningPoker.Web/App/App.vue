@@ -20,10 +20,10 @@
 
 <script lang="ts">
 import { HubConnection } from "@aspnet/signalr";
-import EventBus, { Events } from "./EventBus";
-import HUB_EVENTS from "./HubEvents";
-import Login from "./Login.vue";
-import PokerTable from "./PokerTable.vue";
+import EventBus, { Events } from "./Services/EventBus";
+import HUB_EVENTS from "./Services/HubEvents";
+import Login from "./Components/Login.vue";
+import PokerTable from "./Components/PokerTable.vue";
 
 const HUBS = {
   POKER: "/poker"
