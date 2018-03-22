@@ -10,13 +10,16 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "css-loader": "^0.28.11",
+    "eslint": "^4.19.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-vue": "^4.3.0",
     "node-sass": "^4.7.2",
     "normalize.css": "^8.0.0",
     "sass-loader": "^6.0.7",
     "ts-loader": "^4.1.0",
-    "tslint": "^5.9.1",
-    "tslint-sonarts": "^1.6.0",
     "typescript": "^2.7.2",
+    "typescript-eslint-parser": "^14.0.0",
     "vue": "^2.5.16",
     "vue-class-component": "^6.2.0",
     "vue-loader": "^14.2.1",
@@ -29,6 +32,6 @@
   },
   "scripts": {
     "start": "webpack -w",
-    "lint": "tslint App/**/*.{ts,vue}"
+    "test": "eslint App/**/*.{ts,vue}"
   }
 }

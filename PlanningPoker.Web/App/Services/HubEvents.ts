@@ -1,14 +1,14 @@
 const HUB_EVENTS = {
-    Send: "Send",
-    UsersJoined: "UsersJoined",
-    Disconnected: "Disconnected",
-    Connected: "Connected",
-    JoinUser: "JoinUser",
-    NewGame: "NewGame",
-    ShowCards: "ShowCards",
-    JoinGroup: "JoinGroup",
-    LeaveGroup: "LeaveGroup",
-    UpdateUser: "UpdateUser"
+    Connected: 'Connected',
+    Disconnected: 'Disconnected',
+    JoinGroup: 'JoinGroup',
+    JoinUser: 'JoinUser',
+    LeaveGroup: 'LeaveGroup',
+    NewGame: 'NewGame',
+    Send: 'Send',
+    ShowCards: 'ShowCards',
+    UpdateUser: 'UpdateUser',
+    UsersJoined: 'UsersJoined',
   };
 
 export { HUB_EVENTS as default };

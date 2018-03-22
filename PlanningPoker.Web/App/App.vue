@@ -19,36 +19,35 @@
 </template>
 
 <script lang="ts">
-import { HubConnection } from "@aspnet/signalr";
-import EventBus, { Events } from "./Services/EventBus";
-import HUB_EVENTS from "./Services/HubEvents";
-import Login from "./Components/Login.vue";
-import PokerTable from "./Components/PokerTable.vue";
+import { HubConnection } from '@aspnet/signalr';
+import Vue from 'vue';
+import Component from 'vue-class-component';
+import Login from './Components/Login.vue';
+import PokerTable from './Components/PokerTable.vue';
+import EventBus, { Events } from './Services/EventBus';
+import HUB_EVENTS from './Services/HubEvents';
 
 const HUBS = {
-  POKER: "/poker"
+  POKER: '/poker',
 };
-
-import Vue from "vue";
-import Component from "vue-class-component";
 
 @Component({
   components: {
     Login,
-    PokerTable
-  }
+    PokerTable,
+  },
 })
 export default class App extends Vue {
-  name: string = "app";
-  pokerHub: any = {};
-  joined: boolean = false;
-  messages: any[] = [];
-  player: object = {};
-  playersOnline: object = {};
-  isCardsRevealed: boolean = false;
-  gamesPlayed: any[] = [];
+  private name: string = 'app';
+  private pokerHub: any = {};
+  private joined: boolean = false;
+  private messages: any[] = [];
+  private player: object = {};
+  private playersOnline: object = {};
+  private isCardsRevealed: boolean = false;
+  private gamesPlayed: any[] = [];
 
-  mounted(): void {
+  private mounted(): void {
     this.pokerHub = new HubConnection(HUBS.POKER);
     this.pokerHub.start();
 
@@ -60,64 +59,58 @@ export default class App extends Vue {
     this.pokerHub.on(HUB_EVENTS.NewGame, this.handleNewGame);
     this.pokerHub.on(HUB_EVENTS.ShowCards, this.handleShowCards);
     this.pokerHub.on(HUB_EVENTS.JoinGroup, this.handleJoinGroup);
-    this.pokerHub.on(HUB_EVENTS.LeaveGroup, this.handleLeaveGroup);
   }
-  handleConnected(usersOnline) {
-    usersOnline.forEach(user => {
+
+  private handleConnected(usersOnline) {
+    usersOnline.forEach((user) => {
       this.$set(this.playersOnline, user.connectionId, {
-        Name: user.name || ""
+        Name: user.name || '',
       });
     });
   }
 
-  handleDisconnected(usersOnline) {
+  private handleDisconnected(usersOnline) {
     this.playersOnline = {};
-
-    usersOnline.forEach(user => {
-      this.$set(this.playersOnline, user.connectionId, {
-        Name: user.name || ""
-      });
-    });
+    this.handleConnected(usersOnline);
   }
 
-  join(playerName) {
+  private join(playerName) {
     this.pokerHub.invoke(HUB_EVENTS.JoinUser, playerName);
   }
 
-  playCard(card) {
+  private playCard(card) {
     this.pokerHub.invoke(HUB_EVENTS.Send, card);
   }
 
-  handleUserJoined(user: any) {
+  private handleUserJoined(user: any) {
     this.joined = true;
     this.$set(this.playersOnline, user.connectionId, { Name: user.name });
   }
 
-  handleSend(message: string) {
+  private handleSend(message: string) {
     this.messages.push(message);
-    // this.message = "";
   }
 
-  newGame() {
+  private newGame() {
     this.pokerHub.invoke(HUB_EVENTS.NewGame);
   }
 
-  handleNewGame() {
+  private handleNewGame() {
     EventBus.$emit(Events.NEW_GAME_STARTED);
     this.gamesPlayed.push(this.messages);
     this.messages = [];
     this.isCardsRevealed = false;
   }
 
-  showCards() {
+  private showCards() {
     this.pokerHub.invoke(HUB_EVENTS.ShowCards);
   }
 
-  handleShowCards() {
+  private handleShowCards() {
     this.isCardsRevealed = true;
   }
 
-  joinGroup(playerName, groupId) {
+  private joinGroup(playerName, groupId) {
     const message = { playerName, groupId };
     this.pokerHub.invoke(HUB_EVENTS.JoinGroup, message);
 
@@ -125,25 +118,16 @@ export default class App extends Vue {
       const url = `${window.location.protocol}//${window.location.host}${
         window.location.pathname
       }?groupId=${groupId}`;
-      window.history.pushState({ path: url }, "", url);
+      window.history.pushState({ path: url }, '', url);
     }
   }
 
-  handleJoinGroup(usersOnline) {
+  private handleJoinGroup(usersOnline) {
     this.playersOnline = {};
-
-    usersOnline.forEach(user => {
-      this.$set(this.playersOnline, user.connectionId, {
-        Name: user.name || ""
-      });
-    });
+    this.handleConnected(usersOnline);
   }
 
-  handleLeaveGroup() {
-    console.warn(HUB_EVENTS.LeaveGroup);
-  }
-
-  handleUpdateUser(user) {
+  private handleUpdateUser(user) {
     this.joined = true;
     this.player = user;
   }
