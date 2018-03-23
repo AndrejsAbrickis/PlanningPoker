@@ -21,7 +21,7 @@ module.exports = { // eslint-disable-line
         },
     },
     module: {
-        rules: [
+        loaders: [
             {
                 test: /\.ts$/,
                 exclude: /node_modules|vue\/src/,
