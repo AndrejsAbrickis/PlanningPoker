@@ -2,14 +2,12 @@ version: 2
 jobs:
   build:
     docker:
-      - image: debian:stretch
+      - image: circleci/node:9.9.0-stretch
     steps:
       - checkout
       - run:
-          name: yarn install
+          name: Install
           command: yarn install
-    steps:
-      - test
       - run:
-          name: yarn test
+          name: Test
           command: yarn test
