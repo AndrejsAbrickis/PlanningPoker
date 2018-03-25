@@ -1,13 +1,13 @@
-const webpack = require("webpack");
+const webpack = require('webpack'); // eslint-disable-line
 
-module.exports = {
-    context: __dirname + "/App",
+module.exports = { // eslint-disable-line
+    context: __dirname + '/App', // eslint-disable-line
     entry: {
-        app: "./main.ts"
+        app: './main.ts'
     },
     output: {
-        path: __dirname + "/wwwroot/js",
-        filename: "[name].bundle.js"
+        path: __dirname + '/wwwroot/js', // eslint-disable-line
+        filename: '[name].bundle.js'
     },
     resolve: {
         extensions: ['.ts', '.js', '.vue', '.json'],
@@ -21,7 +21,7 @@ module.exports = {
         },
     },
     module: {
-        rules: [
+        loaders: [
             {
                 test: /\.ts$/,
                 exclude: /node_modules|vue\/src/,
