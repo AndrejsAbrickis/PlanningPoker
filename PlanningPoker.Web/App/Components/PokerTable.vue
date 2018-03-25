@@ -129,7 +129,7 @@ export default class PokerTable extends Vue {
   }
 
   private GetName(connectionId: string): string {
-      return this.playersOnline[connectionId] != null ? this.playersOnline[connectionId].Name : 'NoName';
+      return this.playersOnline[connectionId] !== null ? this.playersOnline[connectionId].Name : 'NoName';
   }
 }
 </script>

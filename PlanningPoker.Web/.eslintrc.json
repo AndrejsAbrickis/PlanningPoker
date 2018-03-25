@@ -12,6 +12,13 @@
         "quotes": [
             "error",
             "single"
+        ],
+        "eqeqeq": "error",
+        "no-magic-numbers": "error",
+        "radix": "error",
+        "comma-dangle": [
+            "error",
+            "always-multiline"
         ]
     }
 }
