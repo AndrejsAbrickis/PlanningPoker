@@ -1,0 +1,15 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: debian:stretch
+    steps:
+      - checkout
+      - run:
+          name: yarn install
+          command: yarn install
+    steps:
+      - test
+      - run:
+          name: yarn test
+          command: yarn test
