@@ -1,19 +1,23 @@
 <template>
   <v-app>
-    <div id="app" class="full-height">
-        <h2 v-if="!joined">Planning Poker</h2>
-        <login v-if="!joined" :join="joinGroup" :player="player" />
-        <poker-table
-          v-if="joined" 
-          :player="player" 
-          :messages="messages" 
-          :playersOnline="playersOnline"
-          :playCard="playCard"
-          :isCardsRevealed="isCardsRevealed"
-          :showCards="showCards"
-          :newGame="newGame"
-          :gamesPlayed="gamesPlayed">
-        </poker-table>
+    <div 
+      id="app"
+      class="full-height">
+      <h2 v-if="!joined">Planning Poker</h2>
+      <login 
+        v-if="!joined" 
+        :join="joinGroup" 
+        :player="player" />
+      <poker-table
+        v-if="joined" 
+        :player="player" 
+        :messages="messages" 
+        :players-online="playersOnline"
+        :play-card="playCard"
+        :is-cards-revealed="isCardsRevealed"
+        :show-cards="showCards"
+        :new-game="newGame"
+        :games-played="gamesPlayed"/>
     </div>
   </v-app>
 </template>
@@ -21,9 +25,9 @@
 <script lang="ts">
 import { HubConnection } from '@aspnet/signalr';
 import Vue from 'vue';
-import Component from 'vue-class-component';
-import Login from './Components/Login.vue';
-import PokerTable from './Components/PokerTable.vue';
+import Component from 'vue-class-component'; // eslint-disable-line
+import Login from './Components/Login.vue';  // eslint-disable-line
+import PokerTable from './Components/PokerTable.vue';  // eslint-disable-line
 import EventBus, { Events } from './Services/EventBus';
 import HUB_EVENTS from './Services/HubEvents';
 
@@ -39,13 +43,13 @@ const HUBS = {
 })
 export default class App extends Vue {
   private name: string = 'app';
-  private pokerHub: any = {};
-  private joined: boolean = false;
-  private messages: any[] = [];
-  private player: object = {};
-  private playersOnline: object = {};
-  private isCardsRevealed: boolean = false;
-  private gamesPlayed: any[] = [];
+  private pokerHub: any = {}; // eslint-disable-line no-undef
+  private joined: boolean = false; // eslint-disable-line no-undef
+  private messages: any[] = []; // eslint-disable-line no-undef
+  private player: object = {}; // eslint-disable-line no-undef
+  private playersOnline: object = {}; // eslint-disable-line no-undef
+  private isCardsRevealed: boolean = false; // eslint-disable-line no-undef
+  private gamesPlayed: any[] = []; // eslint-disable-line no-undef
 
   private mounted(): void {
     this.pokerHub = new HubConnection(HUBS.POKER);

@@ -11929,9 +11929,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 
 
-
-
-
+ // eslint-disable-line
+ // eslint-disable-line
+ // eslint-disable-line
 
 
 var HUBS = {
@@ -11942,13 +11942,13 @@ var App = /** @class */ (function (_super) {
     function App() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.name = 'app';
-        _this.pokerHub = {};
-        _this.joined = false;
-        _this.messages = [];
-        _this.player = {};
-        _this.playersOnline = {};
-        _this.isCardsRevealed = false;
-        _this.gamesPlayed = [];
+        _this.pokerHub = {}; // eslint-disable-line no-undef
+        _this.joined = false; // eslint-disable-line no-undef
+        _this.messages = []; // eslint-disable-line no-undef
+        _this.player = {}; // eslint-disable-line no-undef
+        _this.playersOnline = {}; // eslint-disable-line no-undef
+        _this.isCardsRevealed = false; // eslint-disable-line no-undef
+        _this.gamesPlayed = []; // eslint-disable-line no-undef
         return _this;
     }
     App.prototype.mounted = function () {
@@ -12144,7 +12144,7 @@ var PokerTable = /** @class */ (function (_super) {
         this.showSidebar = !this.showSidebar;
     };
     PokerTable.prototype.GetName = function (connectionId) {
-        return this.playersOnline[connectionId] != null ? this.playersOnline[connectionId].Name : 'NoName';
+        return this.playersOnline[connectionId] !== null ? this.playersOnline[connectionId].Name : 'NoName';
     };
     PokerTable = __decorate([
         __WEBPACK_IMPORTED_MODULE_1_vue_class_component___default()({
@@ -34041,12 +34041,12 @@ var render = function() {
               attrs: {
                 player: _vm.player,
                 messages: _vm.messages,
-                playersOnline: _vm.playersOnline,
-                playCard: _vm.playCard,
-                isCardsRevealed: _vm.isCardsRevealed,
-                showCards: _vm.showCards,
-                newGame: _vm.newGame,
-                gamesPlayed: _vm.gamesPlayed
+                "players-online": _vm.playersOnline,
+                "play-card": _vm.playCard,
+                "is-cards-revealed": _vm.isCardsRevealed,
+                "show-cards": _vm.showCards,
+                "new-game": _vm.newGame,
+                "games-played": _vm.gamesPlayed
               }
             })
           : _vm._e()
