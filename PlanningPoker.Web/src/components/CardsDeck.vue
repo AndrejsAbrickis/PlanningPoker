@@ -1,18 +1,18 @@
 <template>
   <div v-if="!hasVoted">
     <h3>Play card</h3>
-    <v-container 
-      fluid 
-      grid-list-md 
+    <v-container
+      fluid
+      grid-list-md
       class="u-pb-16">
-      <v-layout 
-        row 
+      <v-layout
+        row
         wrap>
-        <v-flex 
+        <v-flex
           v-for="card in cards"
-          :key="card.value" 
-          xs4 
-          sm3 
+          :key="card.value"
+          xs4
+          sm3
           md2>
           <v-card class="purple white--text">
             <v-card-text @click="vote(card.value)">
@@ -28,7 +28,8 @@
 import Vue from 'vue';
 /* eslint-disable-next-line no-unused-vars */
 import Component from 'vue-class-component';
-import EventBus, { Events } from '../Services/EventBus';
+/* eslint-disable-next-line */
+import EventBus, { Events } from '../services/EventBus';
 
 const CARDS = [
   { value: 0, label: '0' },
@@ -47,9 +48,9 @@ const CARDS = [
 
 @Component({
   props: {
-    playCard: Function,
+  playCard: Function,
   },
-})
+  })
 export default class GamesStats extends Vue {
   /* eslint-disable-next-line no-undef */
   private cards: any[] = CARDS;

@@ -1,17 +1,17 @@
 <template>
   <v-app>
-    <div 
+    <div
       id="app"
       class="full-height">
       <h2 v-if="!joined">Planning Poker</h2>
-      <login 
-        v-if="!joined" 
-        :join="joinGroup" 
+      <login
+        v-if="!joined"
+        :join="joinGroup"
         :player="player" />
       <poker-table
-        v-if="joined" 
-        :player="player" 
-        :messages="messages" 
+        v-if="joined"
+        :player="player"
+        :messages="messages"
         :players-online="playersOnline"
         :play-card="playCard"
         :is-cards-revealed="isCardsRevealed"
@@ -23,13 +23,12 @@
 </template>
 
 <script lang="ts">
-import { HubConnection } from '@aspnet/signalr';
-import Vue from 'vue';
-import Component from 'vue-class-component'; // eslint-disable-line
-import Login from './Components/Login.vue';  // eslint-disable-line
-import PokerTable from './Components/PokerTable.vue';  // eslint-disable-line
-import EventBus, { Events } from './Services/EventBus';
-import HUB_EVENTS from './Services/HubEvents';
+import { HubConnectionBuilder } from '@aspnet/signalr';
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import Login from '@/components/Login.vue';  // eslint-disable-line
+import PokerTable from '@/components/PokerTable.vue';  // eslint-disable-line
+import EventBus, { Events } from '../services/EventBus';
+import { HUB_EVENTS } from '../services/HubEvents';
 
 const HUBS = {
   POKER: '/poker',
@@ -37,12 +36,11 @@ const HUBS = {
 
 @Component({
   components: {
-    Login,
-    PokerTable,
-  },
-})
+  Login,
+  PokerTable,
+  }
+  })
 export default class App extends Vue {
-  private name: string = 'app';
   private pokerHub: any = {}; // eslint-disable-line no-undef
   private joined: boolean = false; // eslint-disable-line no-undef
   private messages: any[] = []; // eslint-disable-line no-undef
@@ -52,7 +50,9 @@ export default class App extends Vue {
   private gamesPlayed: any[] = []; // eslint-disable-line no-undef
 
   private mounted(): void {
-    this.pokerHub = new HubConnection(HUBS.POKER);
+    this.pokerHub = new HubConnectionBuilder()
+      .withUrl(HUBS.POKER)
+      .build();
     this.pokerHub.start();
 
     this.pokerHub.on(HUB_EVENTS.Connected, this.handleConnected);
@@ -65,24 +65,24 @@ export default class App extends Vue {
     this.pokerHub.on(HUB_EVENTS.JoinGroup, this.handleJoinGroup);
   }
 
-  private handleConnected(usersOnline) {
-    usersOnline.forEach((user) => {
+  private handleConnected(usersOnline: any) {
+    usersOnline.forEach((user: any) => {
       this.$set(this.playersOnline, user.connectionId, {
         Name: user.name || '',
       });
     });
   }
 
-  private handleDisconnected(usersOnline) {
+  private handleDisconnected(usersOnline: any) {
     this.playersOnline = {};
     this.handleConnected(usersOnline);
   }
 
-  private join(playerName) {
+  private join(playerName: any) {
     this.pokerHub.invoke(HUB_EVENTS.JoinUser, playerName);
   }
 
-  private playCard(card) {
+  private playCard(card: any) {
     this.pokerHub.invoke(HUB_EVENTS.Send, card);
   }
 
@@ -114,11 +114,11 @@ export default class App extends Vue {
     this.isCardsRevealed = true;
   }
 
-  private joinGroup(playerName, groupId) {
+  private joinGroup(playerName: any, groupId: any) {
     const message = { playerName, groupId };
     this.pokerHub.invoke(HUB_EVENTS.JoinGroup, message);
 
-    if (history.pushState) {
+    if (window.history.pushState) {
       const url = `${window.location.protocol}//${window.location.host}${
         window.location.pathname
       }?groupId=${groupId}`;
@@ -126,12 +126,12 @@ export default class App extends Vue {
     }
   }
 
-  private handleJoinGroup(usersOnline) {
+  private handleJoinGroup(usersOnline: any) {
     this.playersOnline = {};
     this.handleConnected(usersOnline);
   }
 
-  private handleUpdateUser(user) {
+  private handleUpdateUser(user: any) {
     this.joined = true;
     this.player = user;
   }

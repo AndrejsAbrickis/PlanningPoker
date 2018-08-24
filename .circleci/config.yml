@@ -12,5 +12,7 @@ jobs:
       - checkout
       # Download and cache dependencies
       - run: cd PlanningPoker.Web/ && yarn install
+      # build Vue App
+      - run: cd PlanningPoker.Web/ && yarn build
       # run tests!
-      - run: cd PlanningPoker.Web/ && yarn test
+      # - run: cd PlanningPoker.Web/ && yarn test:unit
