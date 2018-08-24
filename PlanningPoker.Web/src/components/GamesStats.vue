@@ -32,16 +32,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
-/* eslint-disable-next-line no-unused-vars */
-import Component from 'vue-class-component';
+import { Component, Prop } from 'vue-property-decorator';
 
-@Component({
-  props: {
-    gamesPlayed: Array,
-    players: Object
-  }
-})
-export default class GamesStats extends Vue {}
+@Component({})
+export default class GamesStats extends Vue {
+  @Prop() private gamesPlayed!: any;
+  @Prop() private players!: any;
+}
 </script>
 <style>
 .index {

@@ -10,10 +10,10 @@ namespace PlanningPoker.Core
     {
         Task<IEnumerable<UserDetailsDto>> UsersOnline();
         Task<IEnumerable<UserDetailsDto>> UsersOnline(string groupId);
-        Task<UserDetailsDto> GetUser(HubConnectionContext connection);
-        Task AddUser(HubConnectionContext connection, UserDetailsDto userDetails);
-        Task UpdateUser(HubConnectionContext connection, UserDetailsDto userDetails);
-        Task RemoveUser(HubConnectionContext connection);
+        Task<UserDetailsDto> GetUser(string connectionId);
+        Task AddUser(string connectionId, UserDetailsDto userDetails);
+        Task UpdateUser(string connectionId, UserDetailsDto userDetails);
+        Task RemoveUser(string connectionId);
 
         event Action<UserDetailsDto[]> UsersJoined;
         event Action<UserDetailsDto[]> UsersLeft;

@@ -7,10 +7,11 @@
     <link href='~/css/normalize.css' rel='stylesheet' />
     <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet"/>
     <link href='~/css/vuetify.min.css' rel="stylesheet"/>
+    <link href='~/public/css/app.css' rel="stylesheet"/>
 </head>
 <body>
     @RenderBody()
-    <script src="~/js/manifest.bundle.js" asp-append-version="true"></script>
-    <script src="~/js/app.bundle.js" asp-append-version="true"></script>
+    <script src="~/public/js/chunk-vendors.js" asp-append-version="true"></script>
+    <script src="~/public/js/app.js" asp-append-version="true"></script>
 </body>
 </html>

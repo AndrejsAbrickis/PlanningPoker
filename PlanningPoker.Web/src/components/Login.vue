@@ -1,33 +1,33 @@
 <template>
   <v-content>
     <v-container>
-      <v-layout 
-        row 
+      <v-layout
+        row
         wrap>
-        <v-flex 
-          xs12 
-          sm10 
-          offset-sm1 
-          md6 
+        <v-flex
+          xs12
+          sm10
+          offset-sm1
+          md6
           offset-md3>
           <v-card class="grey lighten-4">
             <v-card-text>
               <v-form v-model="valid">
-                <v-text-field 
-                  id="playerName" 
+                <v-text-field
+                  id="playerName"
                   v-model="playerName"
                   :rules="[() => !!playerName || 'This field is required']"
                   name="playerName"
                   label="Enter your name here"/>
-                <v-text-field 
+                <v-text-field
                   id="groupId"
-                  v-model="groupId" 
-                  name="groupId"  
+                  v-model="groupId"
+                  name="groupId"
                   label="GroupId"/>
-                <v-btn 
-                  outline 
-                  required 
-                  class="indigo indigo--text" 
+                <v-btn
+                  outline
+                  required
+                  class="indigo indigo--text"
                   @click="submit()">Join</v-btn>
               </v-form>
             </v-card-text>
@@ -38,16 +38,14 @@
   </v-content>
 </template>
 <script lang="ts">
-import Vue from 'vue';
-/* eslint-disable-next-line no-unused-vars */
-import Component from 'vue-class-component';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component({
   props: {
-    join: Function,
-    player: Object,
+  join: Function,
+  player: Object,
   },
-})
+  })
 export default class Login extends Vue {
   /* eslint-disable-next-line no-undef */
   private join: any;

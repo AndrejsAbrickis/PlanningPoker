@@ -11,8 +11,8 @@ namespace PlanningPoker.Core
 
     public class InMemoryUserTracker<THub> : IUserTracker<THub>
     {
-        private readonly ConcurrentDictionary<HubConnectionContext, UserDetailsDto> _usersOnline
-            = new ConcurrentDictionary<HubConnectionContext, UserDetailsDto>();
+        private readonly ConcurrentDictionary<string, UserDetailsDto> _usersOnline
+            = new ConcurrentDictionary<string, UserDetailsDto>();
 
         public event Action<UserDetailsDto[]> UsersJoined;
         public event Action<UserDetailsDto[]> UsersLeft;
@@ -24,31 +24,31 @@ namespace PlanningPoker.Core
             return Task.FromResult(_usersOnline.Values.Where(u => u.GroupId == groupId).AsEnumerable());
         }
 
-        public Task<UserDetailsDto> GetUser(HubConnectionContext connection)
+        public Task<UserDetailsDto> GetUser(string connectionId)
         {
-            var user = _usersOnline.Values.FirstOrDefault( u => u.ConnectionId == connection.ConnectionId);
+            var user = _usersOnline.Values.FirstOrDefault( u => u.ConnectionId == connectionId);
 
             return Task.FromResult(user);
         }
 
-        public Task AddUser(HubConnectionContext connection, UserDetailsDto userDetails)
+        public Task AddUser(string connectionId, UserDetailsDto userDetails)
         {
-            _usersOnline.TryAdd(connection, userDetails);
+            _usersOnline.TryAdd(connectionId, userDetails);
             UsersJoined(new[] { userDetails });
 
             return Task.CompletedTask;
         }
 
-        public Task UpdateUser(HubConnectionContext connection, UserDetailsDto userDetails)
+        public Task UpdateUser(string connectionId, UserDetailsDto userDetails)
         {
-            _usersOnline.AddOrUpdate(connection, userDetails, (oldKey, oldValue) => userDetails);
+            _usersOnline.AddOrUpdate(connectionId, userDetails, (oldKey, oldValue) => userDetails);
 
             return Task.CompletedTask;
         }
 
-        public Task RemoveUser(HubConnectionContext connection)
+        public Task RemoveUser(string connectionId)
         {
-            if (_usersOnline.TryRemove(connection, out var userDetails))
+            if (_usersOnline.TryRemove(connectionId, out var userDetails))
             {
                 UsersLeft(new[] { userDetails });
             }
