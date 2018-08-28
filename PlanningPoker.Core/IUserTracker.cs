@@ -9,7 +9,6 @@ namespace PlanningPoker.Core
     public interface IUserTracker<out THub>
     {
         Task<IEnumerable<UserDetailsDto>> UsersOnline();
-        Task<IEnumerable<UserDetailsDto>> UsersOnline(string groupId);
         Task<UserDetailsDto> GetUser(string connectionId);
         Task AddUser(string connectionId, UserDetailsDto userDetails);
         Task UpdateUser(string connectionId, UserDetailsDto userDetails);
