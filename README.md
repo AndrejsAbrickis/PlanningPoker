@@ -7,7 +7,6 @@ Any help, comments, and critique are more than welcome!
 
 ## Build status
 
-| CircleCI |
-| -------- |
-| [![CircleCI](https://circleci.com/gh/AndrejsAbrickis/PlanningPoker/tree/master.svg?style=svg)](https://circleci.com/gh/AndrejsAbrickis/PlanningPoker/tree/master) |
-
+| Azure Pipelines | CircleCI |
+| --------------- | -------- |
+| [![Build Status](https://abrickis.visualstudio.com/PlanningPoker/_apis/build/status/AndrejsAbrickis.PlanningPoker)](https://abrickis.visualstudio.com/PlanningPoker/_build/latest?definitionId=7) |[![CircleCI](https://circleci.com/gh/AndrejsAbrickis/PlanningPoker/tree/master.svg?style=svg)](https://circleci.com/gh/AndrejsAbrickis/PlanningPoker/tree/master) |
