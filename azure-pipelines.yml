@@ -14,9 +14,9 @@ steps:
   displayName: 'dotnet build $(buildConfiguration)'
 
 - bash: echo Hello from YAML!
-- bash: echo node --version
-- bash: echo npm --version
-- bash: echo yarn --version
+- bash: node --version
+- bash: npm --version
+- bash: yarn --version
 - script: cd PlanningPoker.Web/
 - bash: pwd
 - script: yarn install
