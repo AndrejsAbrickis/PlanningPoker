@@ -16,4 +16,4 @@ steps:
 - bash: curl -o- -L https://yarnpkg.com/install.sh | bash
   displayName: 'install yarn'
 
-- bach: yarn --version
+- bash: yarn --version
