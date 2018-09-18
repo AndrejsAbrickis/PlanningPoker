@@ -13,17 +13,5 @@ steps:
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
 
-- bash: echo Hello from YAML!
-- bash: node --version
-- bash: npm --version
-
-- bash:|
-  curl -o- -L https://yarnpkg.com/install.sh | bash
-  yarn --version
+- bash: curl -o- -L https://yarnpkg.com/install.sh | bash && yarn --version
   displayName: 'install yarn'
-
-- bash: yarn --version
-- script: cd PlanningPoker.Web/
-- bash: pwd
-- script: yarn install
-- script: yarn build
