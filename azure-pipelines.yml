@@ -14,5 +14,5 @@ steps:
   displayName: 'dotnet build $(buildConfiguration)'
 
 - script: cd PlanningPoker.Web/
-- script yarn install
-- script yarn build
+- script: yarn install
+- script: yarn build
