@@ -12,3 +12,8 @@ variables:
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
+
+- bash: curl -o- -L https://yarnpkg.com/install.sh | bash
+  displayName: 'install yarn'
+
+- bash: yarn --version
