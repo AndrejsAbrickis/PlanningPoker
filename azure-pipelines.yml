@@ -16,7 +16,10 @@ steps:
 - bash: echo Hello from YAML!
 - bash: node --version
 - bash: npm --version
-- bash: npm install yarn -g
+
+- bash: curl -o- -L https://yarnpkg.com/install.sh | bash
+  displayName: 'install yarn'
+
 - bash: yarn --version
 - script: cd PlanningPoker.Web/
 - bash: pwd
