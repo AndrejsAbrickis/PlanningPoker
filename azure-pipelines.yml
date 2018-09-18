@@ -17,7 +17,7 @@ steps:
 - bash: node --version
 - bash: npm --version
 
-- bash: |
+- bash:|
   curl -o- -L https://yarnpkg.com/install.sh | bash
   yarn --version
   displayName: 'install yarn'
