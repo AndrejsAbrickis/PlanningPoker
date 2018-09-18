@@ -12,8 +12,7 @@ variables:
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
-  
-- bash: |
-    cd PlanningPoker.Web/
-    yarn install
-    yarn build
+
+- script: cd PlanningPoker.Web/
+- script yarn install
+- script yarn build
