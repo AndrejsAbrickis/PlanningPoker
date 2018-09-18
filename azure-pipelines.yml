@@ -16,6 +16,7 @@ steps:
 - bash: echo Hello from YAML!
 - bash: node --version
 - bash: npm --version
+- bash: brew --version
 - bash: yarn --version
 - script: cd PlanningPoker.Web/
 - bash: pwd
