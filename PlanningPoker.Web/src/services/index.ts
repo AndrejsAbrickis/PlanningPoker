@@ -1,2 +1,2 @@
-export * from './HubEvents';
+export * from './EventBus';
 export * from './HubEvents';
