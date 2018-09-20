@@ -31,10 +31,6 @@ steps:
   displayName: 'yarn lint'
   workingDirectory: PlanningPoker.Web
   
-- script: yarn test:unit
-  displayName: 'yarn test:unit'
-  workingDirectory: PlanningPoker.Web
-  
 - script: yarn build
   displayName: 'yarn build'
   workingDirectory: PlanningPoker.Web
