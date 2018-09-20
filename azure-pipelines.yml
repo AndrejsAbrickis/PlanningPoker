@@ -25,15 +25,6 @@ steps:
 
     Arguments: install
 
-
-- task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
-  displayName: 'Yarn lint'
-  inputs:
-    ProjectDirectory: PlanningPoker.Web
-
-    Arguments: lint
-
-
 - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
   displayName: 'Yarn test'
   inputs:
