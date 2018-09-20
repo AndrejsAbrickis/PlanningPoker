@@ -18,5 +18,9 @@ steps:
   inputs:
     checkLatest: true
 
-- script: yarn install
+- script: |
+    yarn install
+    yarn lint
+    yarn test:unit
+    yarn build
   workingDirectory: PlanningPoker.Web
