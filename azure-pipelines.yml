@@ -19,3 +19,4 @@ steps:
     checkLatest: true
 
 - script: yarn install
+  workingDirectory: PlanningPoker.Web
