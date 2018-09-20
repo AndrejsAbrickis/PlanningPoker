@@ -17,3 +17,34 @@ steps:
   displayName: 'Use Yarn 1.x'
   inputs:
     checkLatest: true
+
+- task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+  displayName: 'Yarn install'
+  inputs:
+    ProjectDirectory: PlanningPoker.Web
+
+    Arguments: install
+
+
+- task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+  displayName: 'Yarn lint'
+  inputs:
+    ProjectDirectory: PlanningPoker.Web
+
+    Arguments: lint
+
+
+- task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+  displayName: 'Yarn test'
+  inputs:
+    ProjectDirectory: PlanningPoker.Web
+
+    Arguments: 'test:unit'
+
+
+- task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+  displayName: 'Yarn build'
+  inputs:
+    ProjectDirectory: PlanningPoker.Web
+
+    Arguments: build
