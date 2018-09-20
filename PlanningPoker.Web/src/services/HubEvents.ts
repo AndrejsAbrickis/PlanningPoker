@@ -1,3 +1,4 @@
+/* eslint-disable-next-line */
 export const HUB_EVENTS = {
   Connected: 'Connected',
   Disconnected: 'Disconnected',
@@ -9,4 +10,4 @@ export const HUB_EVENTS = {
   ShowCards: 'ShowCards',
   UpdateUser: 'UpdateUser',
   UsersJoined: 'UsersJoined',
-}
+};
