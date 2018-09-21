@@ -29,7 +29,7 @@ import Vue from 'vue';
 /* eslint-disable-next-line no-unused-vars */
 import Component from 'vue-class-component';
 /* eslint-disable-next-line */
-import EventBus, { Events } from '../services/EventBus';
+import { EventBus, Events } from '@/services';
 
 const CARDS = [
   { value: 0, label: '0' },

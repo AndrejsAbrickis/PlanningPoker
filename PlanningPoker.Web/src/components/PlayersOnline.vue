@@ -7,8 +7,8 @@
         {{ user.name }}
       </v-chip>
     </div>
-    <div 
-      v-for="(player, key) in playersOnline" 
+    <div
+      v-for="(player, key) in playersOnline"
       :key="key">
       <v-chip class="grey lighten-2">
         <v-avatar class="teal">{{ player.Name.charAt(0) }}</v-avatar>
@@ -24,10 +24,10 @@ import Component from 'vue-class-component';
 
 @Component({
   props: {
-    players: Object,
-    user: Object,
+  players: Object,
+  user: Object,
   },
-})
+  })
 export default class PlayersOnline extends Vue {
   /* eslint-disable-next-line no-undef */
   private players: any;
@@ -36,8 +36,8 @@ export default class PlayersOnline extends Vue {
 
   get playersOnline(): any[] {
     return Object.keys(this.players)
-      .filter((playerKey) => playerKey !== this.user.connectionId)
-      .map((playerKey) => this.players[playerKey])
+      .filter(playerKey => playerKey !== this.user.connectionId)
+      .map(playerKey => this.players[playerKey]);
   }
 }
 </script>
