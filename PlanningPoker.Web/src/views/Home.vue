@@ -28,7 +28,6 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import Login from '@/components/Login.vue';  // eslint-disable-line
 import PokerTable from '@/components/PokerTable.vue';  // eslint-disable-line
 import { EventBus, Events, HUB_EVENTS } from '@/services';
-// import {  } from '@/services';
 
 const HUBS = {
   POKER: '/poker',
