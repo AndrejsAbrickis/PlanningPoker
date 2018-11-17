@@ -5,6 +5,9 @@ There are a lot of hacks and shortcuts in the code to make it possible to push o
  
 Any help, comments, and critique are more than welcome!
 
+## Demo
+https://planning-poker-web.azurewebsites.net/
+
 ## Build status
 
 | Azure Pipelines | CircleCI |
