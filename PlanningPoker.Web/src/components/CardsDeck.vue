@@ -48,14 +48,16 @@ const CARDS = [
 
 @Component({
   props: {
-  playCard: Function,
+    playCard: Function,
   },
-  })
+})
 export default class GamesStats extends Vue {
   /* eslint-disable-next-line no-undef */
   private cards: any[] = CARDS;
+
   /* eslint-disable-next-line no-undef */
   private hasVoted: boolean = false;
+
   /* eslint-disable-next-line no-undef */
   private playCard: any;
 

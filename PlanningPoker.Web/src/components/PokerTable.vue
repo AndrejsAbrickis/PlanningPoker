@@ -100,24 +100,25 @@ import PlayersOnline from './PlayersOnline.vue';
 
 @Component({
   components: {
-  CardsDeck,
-  GamesStats,
-  PlayersOnline,
+    CardsDeck,
+    GamesStats,
+    PlayersOnline,
   },
   props: {
-  gamesPlayed: Array,
-  isCardsRevealed: Boolean,
-  messages: Array,
-  newGame: Function,
-  playCard: Function,
-  player: Object,
-  playersOnline: Object,
-  showCards: Function,
+    gamesPlayed: Array,
+    isCardsRevealed: Boolean,
+    messages: Array,
+    newGame: Function,
+    playCard: Function,
+    player: Object,
+    playersOnline: Object,
+    showCards: Function,
   },
-  })
+})
 export default class PokerTable extends Vue {
   /* eslint-disable-next-line no-undef */
   private showSidebar: boolean = false;
+
   /* eslint-disable-next-line no-undef */
   private playersOnline: any = this.playersOnline;
 

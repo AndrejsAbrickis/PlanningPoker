@@ -37,6 +37,7 @@ import { Component, Prop } from 'vue-property-decorator';
 @Component({})
 export default class GamesStats extends Vue {
   @Prop() private gamesPlayed!: any;
+
   @Prop() private players!: any;
 }
 </script>

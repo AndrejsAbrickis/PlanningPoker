@@ -23,10 +23,10 @@
 </template>
 
 <script lang="ts">
-import { HubConnectionBuilder } from '@aspnet/signalr';
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import Login from '@/components/Login.vue';  // eslint-disable-line
-import PokerTable from '@/components/PokerTable.vue';  // eslint-disable-line
+import { HubConnectionBuilder } from '@aspnet/signalr';
+import Login from '@/components/Login.vue';
+import PokerTable from '@/components/PokerTable.vue';
 import { EventBus, Events, HUB_EVENTS } from '@/services';
 
 const HUBS = {
@@ -35,23 +35,27 @@ const HUBS = {
 
 @Component({
   components: {
-  Login,
-  PokerTable,
-  }
-  })
+    Login,
+    PokerTable,
+  },
+})
 export default class App extends Vue {
-  private pokerHub: any = {}; // eslint-disable-line no-undef
-  private joined: boolean = false; // eslint-disable-line no-undef
-  private messages: any[] = []; // eslint-disable-line no-undef
-  private player: object = {}; // eslint-disable-line no-undef
-  private playersOnline: object = {}; // eslint-disable-line no-undef
-  private isCardsRevealed: boolean = false; // eslint-disable-line no-undef
-  private gamesPlayed: any[] = []; // eslint-disable-line no-undef
+  private pokerHub: any = {};
+
+  private joined: boolean = false;
+
+  private messages: any[] = [];
+
+  private player: object = {};
+
+  private playersOnline: object = {};
+
+  private isCardsRevealed: boolean = false;
+
+  private gamesPlayed: any[] = [];
 
   private mounted(): void {
-    this.pokerHub = new HubConnectionBuilder()
-      .withUrl(HUBS.POKER)
-      .build();
+    this.pokerHub = new HubConnectionBuilder().withUrl(HUBS.POKER).build();
     this.pokerHub.start();
 
     this.pokerHub.on(HUB_EVENTS.Connected, this.handleConnected);
@@ -139,7 +143,7 @@ export default class App extends Vue {
 
 <style>
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
