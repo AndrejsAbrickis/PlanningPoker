@@ -31,6 +31,7 @@ import Component from 'vue-class-component';
 export default class PlayersOnline extends Vue {
   /* eslint-disable-next-line no-undef */
   private players: any;
+
   /* eslint-disable-next-line no-undef */
   private user: any;
 

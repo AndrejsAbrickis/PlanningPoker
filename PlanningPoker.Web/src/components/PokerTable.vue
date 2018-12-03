@@ -118,6 +118,7 @@ import PlayersOnline from './PlayersOnline.vue';
 export default class PokerTable extends Vue {
   /* eslint-disable-next-line no-undef */
   private showSidebar: boolean = false;
+
   /* eslint-disable-next-line no-undef */
   private playersOnline: any = this.playersOnline;
 
