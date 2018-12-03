@@ -48,9 +48,9 @@ const CARDS = [
 
 @Component({
   props: {
-  playCard: Function,
+    playCard: Function,
   },
-  })
+})
 export default class GamesStats extends Vue {
   /* eslint-disable-next-line no-undef */
   private cards: any[] = CARDS;

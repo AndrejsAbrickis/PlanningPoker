@@ -42,10 +42,10 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component({
   props: {
-  join: Function,
-  player: Object,
+    join: Function,
+    player: Object,
   },
-  })
+})
 export default class Login extends Vue {
   /* eslint-disable-next-line no-undef */
   private join: any;

@@ -24,10 +24,10 @@ import Component from 'vue-class-component';
 
 @Component({
   props: {
-  players: Object,
-  user: Object,
+    players: Object,
+    user: Object,
   },
-  })
+})
 export default class PlayersOnline extends Vue {
   /* eslint-disable-next-line no-undef */
   private players: any;

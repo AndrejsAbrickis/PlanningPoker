@@ -35,10 +35,10 @@ const HUBS = {
 
 @Component({
   components: {
-  Login,
-  PokerTable,
+    Login,
+    PokerTable,
   },
-  })
+})
 export default class App extends Vue {
   private pokerHub: any = {};
 
