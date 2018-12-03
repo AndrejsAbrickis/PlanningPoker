@@ -49,12 +49,16 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 export default class Login extends Vue {
   /* eslint-disable-next-line no-undef */
   private join: any;
+
   /* eslint-disable-next-line no-undef */
   private player: any;
+
   /* eslint-disable-next-line no-undef */
   private groupId: any = this.player.groupId || '';
+
   /* eslint-disable-next-line no-undef */
   private valid: boolean = false;
+
   /* eslint-disable-next-line no-undef */
   private playerName: string = '';
 
