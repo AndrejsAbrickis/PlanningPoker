@@ -9,5 +9,15 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
+    
     - name: Build Release
       run: dotnet build --configuration Release
+      
+    - name: yarn install
+      run: yarn install
+      
+    - name: yarn lint
+      run: yarn lint
+      
+    - name: yarn build
+      run: yarn build
