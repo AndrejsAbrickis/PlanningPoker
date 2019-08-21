@@ -1,0 +1,26 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    
+    - name: Build Release
+      run: dotnet build --configuration Release
+      
+    - name: yarn install
+      run: yarn install
+      working-directory: PlanningPoker.Web
+      
+    - name: yarn lint
+      run: yarn lint
+      working-directory: PlanningPoker.Web
+      
+    - name: yarn build
+      run: yarn build
+      working-directory: PlanningPoker.Web
