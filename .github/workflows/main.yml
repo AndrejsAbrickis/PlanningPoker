@@ -15,9 +15,12 @@ jobs:
       
     - name: yarn install
       run: yarn install
+      working-directory: PlanningPoker.Web
       
     - name: yarn lint
       run: yarn lint
+      working-directory: PlanningPoker.Web
       
     - name: yarn build
       run: yarn build
+      working-directory: PlanningPoker.Web
