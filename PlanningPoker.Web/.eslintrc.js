@@ -12,7 +12,4 @@ module.exports = {
     'no-console': 'error',
     'no-debugger': 'error',
   },
-  parserOptions: {
-    parser: 'typescript-eslint-parser',
-  },
 };

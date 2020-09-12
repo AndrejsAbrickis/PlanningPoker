@@ -16,21 +16,17 @@
         :new-game="startNewGame"
         :games-played="gamesPlayed"
       />
-
-      <h2>Other Players</h2>
-      <p>{{ players }}</p>
-      <h2>Messages</h2>
-      <p v-for="(message, index) in messages" :key="index">{{ message }}</p>
     </div>
   </v-app>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { HubConnectionBuilder } from "@aspnet/signalr";
-import Login from "@/components/Login.vue";
-import PokerTable from "@/components/PokerTable.vue";
-import { EventBus, Events, HUB_ACTIONS, HUB_EVENTS } from "@/services";
+import { Component, Vue } from 'vue-property-decorator';
+import Login from '@/components/Login.vue';
+import PokerTable from '@/components/PokerTable.vue';
+import {
+  EventBus, Events, HUB_ACTIONS, HUB_EVENTS,
+} from '@/services';
 
 @Component({
   components: {
@@ -42,13 +38,19 @@ export default class App extends Vue {
   private $gameHub: any; // Dummy field to satisfy linter
 
   private messages: string[] = [];
+
   private player: any = null;
+
   private players: any[] = [];
 
   private pokerHub: any = {};
+
   private joined: boolean = false;
+
   private playersOnline: object = {};
+
   private isCardsRevealed: boolean = false;
+
   private gamesPlayed: any[] = [];
 
   private mounted(): void {
@@ -65,7 +67,7 @@ export default class App extends Vue {
 
     if (window.history.pushState) {
       const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?groupId=${groupId}`;
-      window.history.pushState({ path: url }, "", url);
+      window.history.pushState({ path: url }, '', url);
     }
   }
 

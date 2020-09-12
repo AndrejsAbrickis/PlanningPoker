@@ -18,8 +18,8 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import Vue from 'vue';
+import { Component, Prop } from 'vue-property-decorator';
 
 @Component({})
 export default class PlayersOnline extends Vue {
@@ -31,8 +31,7 @@ export default class PlayersOnline extends Vue {
 
   get playersOnline(): any[] {
     return this.players.filter(
-      ({ connectionId }: { connectionId: string }) =>
-        connectionId != this.user.connectionId,
+      ({ connectionId }: { connectionId: string }) => connectionId !== this.user.connectionId,
     );
   }
 }

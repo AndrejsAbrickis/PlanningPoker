@@ -1,13 +1,13 @@
-import Vue from "vue";
-import vuetify from "./plugins/vuetify";
-import App from "./App.vue";
-import router from "./router";
+import Vue from 'vue';
 import { HubConnectionBuilder } from '@aspnet/signalr';
+import vuetify from './plugins/vuetify';
+import App from './App.vue';
+import router from './router';
 
 Vue.config.productionTip = false;
 
 const HUBS = {
-  GAME: "https://localhost:5001/gamehub",
+  GAME: 'https://localhost:5001/gamehub',
 };
 
 const gameHub = new HubConnectionBuilder().withUrl(HUBS.GAME).build();
@@ -19,4 +19,4 @@ new Vue({
   vuetify,
   router,
   render: (h) => h(App),
-}).$mount("#app");
+}).$mount('#app');

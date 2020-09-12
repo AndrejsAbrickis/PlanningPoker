@@ -31,16 +31,18 @@
   </v-main>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue } from 'vue-property-decorator';
 
 @Component
 export default class Login extends Vue {
-  private groupId: string = "";
+  private groupId: string = '';
+
   private valid: boolean = false;
-  private name: string = "";
+
+  private name: string = '';
 
   private mounted() {
-    this.groupId = new URLSearchParams(window.location.search).get("groupId") || "";
+    this.groupId = new URLSearchParams(window.location.search).get('groupId') || '';
   }
 
   private submit() {
@@ -48,7 +50,7 @@ export default class Login extends Vue {
       return;
     }
 
-    this.$emit("submit", {
+    this.$emit('submit', {
       name: this.name,
       groupId: this.groupId,
     });

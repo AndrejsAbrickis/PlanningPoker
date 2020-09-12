@@ -21,14 +21,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { HubConnectionBuilder } from "@aspnet/signalr";
-import Login from "@/components/Login.vue";
-import PokerTable from "@/components/PokerTable.vue";
-import { EventBus, Events, HUB_EVENTS } from "@/services";
+import { Component, Vue } from 'vue-property-decorator';
+import { HubConnectionBuilder } from '@aspnet/signalr';
+import Login from '@/components/Login.vue';
+import PokerTable from '@/components/PokerTable.vue';
+import { EventBus, Events, HUB_EVENTS } from '@/services';
 
 const HUBS = {
-  GAME: "https://localhost:5001/gamehub",
+  GAME: 'https://localhost:5001/gamehub',
 };
 
 @Component({
@@ -69,7 +69,7 @@ export default class App extends Vue {
   private handleConnected(usersOnline: any) {
     usersOnline.forEach((user: any) => {
       this.$set(this.playersOnline, user.connectionId, {
-        Name: user.name || "",
+        Name: user.name || '',
       });
     });
   }
@@ -80,7 +80,6 @@ export default class App extends Vue {
   }
 
   private join(playerName: any) {
-    console.log(playerName);
     this.pokerHub.invoke(HUB_EVENTS.JoinUser, playerName);
   }
 
@@ -127,7 +126,7 @@ export default class App extends Vue {
 
     if (window.history.pushState) {
       const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?groupId=${groupId}`;
-      window.history.pushState({ path: url }, "", url);
+      window.history.pushState({ path: url }, '', url);
     }
   }
 
