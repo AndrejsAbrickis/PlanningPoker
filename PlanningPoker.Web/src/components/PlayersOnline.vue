@@ -2,47 +2,41 @@
   <div class="u-ta-l">
     <h4>Online ({{ Object.keys(players).length }})</h4>
     <div>
-      <v-chip class="grey lighten-2">
-        <v-avatar class="orange">{{ user.name.charAt(0) }}</v-avatar>
+      <v-chip class="grey lighten-2 pl-1">
+        <v-avatar class="orange mr-2">{{ user.name.charAt(0) }}</v-avatar>
         {{ user.name }}
       </v-chip>
     </div>
-    <div
-      v-for="(player, key) in playersOnline"
-      :key="key">
-      <v-chip class="grey lighten-2">
-        <v-avatar class="teal">{{ player.Name.charAt(0) }}</v-avatar>
-        {{ player.Name }}
+    <div v-for="(player, key) in playersOnline" :key="key">
+      <v-chip class="grey lighten-2 pl-1">
+        <v-avatar class="teal lighten-2 mr-2" v-if="player.name">
+          {{ player.name.charAt(0) }}
+        </v-avatar>
+        {{ player.name }}
       </v-chip>
     </div>
   </div>
 </template>
 <script lang="ts">
-import Vue from 'vue';
-/* eslint-disable-next-line no-unused-vars */
-import Component from 'vue-class-component';
+import Vue from "vue";
+import { Component, Prop } from "vue-property-decorator";
 
-@Component({
-  props: {
-    players: Object,
-    user: Object,
-  },
-})
+@Component({})
 export default class PlayersOnline extends Vue {
-  /* eslint-disable-next-line no-undef */
+  @Prop()
   private players: any;
 
-  /* eslint-disable-next-line no-undef */
+  @Prop()
   private user: any;
 
   get playersOnline(): any[] {
-    return Object.keys(this.players)
-      .filter(playerKey => playerKey !== this.user.connectionId)
-      .map(playerKey => this.players[playerKey]);
+    return this.players.filter(
+      ({ connectionId }: { connectionId: string }) =>
+        connectionId != this.user.connectionId,
+    );
   }
 }
 </script>
-
 
 <style scoped>
 h4 {

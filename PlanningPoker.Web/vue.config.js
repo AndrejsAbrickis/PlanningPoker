@@ -1,4 +1,5 @@
 module.exports = {
-  outputDir: 'wwwroot/public',
+  outputDir: "wwwroot/public",
   filenameHashing: false,
+  lintOnSave: false,
 };

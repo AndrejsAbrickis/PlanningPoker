@@ -1,13 +1,10 @@
 <template>
   <v-app>
-    <div
-      id="app"
-      class="full-height">
-      <h2 v-if="!joined">Planning Poker</h2>
-      <login
-        v-if="!joined"
-        :join="joinGroup"
-        :player="player" />
+    <div id="app" class="full-height">
+      <template v-if="!joined">
+        <h2>Planning Poker</h2>
+        <Login :player="player" @submit="joinGroup" />
+      </template>
       <poker-table
         v-if="joined"
         :player="player"
@@ -17,20 +14,21 @@
         :is-cards-revealed="isCardsRevealed"
         :show-cards="showCards"
         :new-game="newGame"
-        :games-played="gamesPlayed"/>
+        :games-played="gamesPlayed"
+      />
     </div>
   </v-app>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import { HubConnectionBuilder } from '@aspnet/signalr';
-import Login from '@/components/Login.vue';
-import PokerTable from '@/components/PokerTable.vue';
-import { EventBus, Events, HUB_EVENTS } from '@/services';
+import { Component, Prop, Vue } from "vue-property-decorator";
+import { HubConnectionBuilder } from "@aspnet/signalr";
+import Login from "@/components/Login.vue";
+import PokerTable from "@/components/PokerTable.vue";
+import { EventBus, Events, HUB_EVENTS } from "@/services";
 
 const HUBS = {
-  POKER: '/poker',
+  GAME: "https://localhost:5001/gamehub",
 };
 
 @Component({
@@ -55,7 +53,7 @@ export default class App extends Vue {
   private gamesPlayed: any[] = [];
 
   private mounted(): void {
-    this.pokerHub = new HubConnectionBuilder().withUrl(HUBS.POKER).build();
+    this.pokerHub = new HubConnectionBuilder().withUrl(HUBS.GAME).build();
     this.pokerHub.start();
 
     this.pokerHub.on(HUB_EVENTS.Connected, this.handleConnected);
@@ -71,7 +69,7 @@ export default class App extends Vue {
   private handleConnected(usersOnline: any) {
     usersOnline.forEach((user: any) => {
       this.$set(this.playersOnline, user.connectionId, {
-        Name: user.name || '',
+        Name: user.name || "",
       });
     });
   }
@@ -82,6 +80,7 @@ export default class App extends Vue {
   }
 
   private join(playerName: any) {
+    console.log(playerName);
     this.pokerHub.invoke(HUB_EVENTS.JoinUser, playerName);
   }
 
@@ -91,7 +90,7 @@ export default class App extends Vue {
 
   private handleUserJoined(user: any) {
     this.joined = true;
-    this.$set(this.playersOnline, user.connectionId, { Name: user.name });
+    this.$set(this.playersOnline, user.connectionId, { Name: user.playerName });
   }
 
   private handleSend(message: string) {
@@ -117,15 +116,18 @@ export default class App extends Vue {
     this.isCardsRevealed = true;
   }
 
-  private joinGroup(playerName: any, groupId: any) {
-    const message = { playerName, groupId };
-    this.pokerHub.invoke(HUB_EVENTS.JoinGroup, message);
+  private joinGroup({
+    name,
+    groupId,
+  }: {
+    name: string;
+    groupId: string;
+  }) {
+    this.pokerHub.invoke(HUB_EVENTS.JoinGroup, { name, groupId });
 
     if (window.history.pushState) {
-      const url = `${window.location.protocol}//${window.location.host}${
-        window.location.pathname
-      }?groupId=${groupId}`;
-      window.history.pushState({ path: url }, '', url);
+      const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?groupId=${groupId}`;
+      window.history.pushState({ path: url }, "", url);
     }
   }
 
@@ -143,7 +145,7 @@ export default class App extends Vue {
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
