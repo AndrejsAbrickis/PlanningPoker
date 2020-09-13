@@ -24,7 +24,7 @@
     "@vue/test-utils": "^1.0.5",
     "babel-core": "7.0.0-bridge.0",
     "deepmerge": "^4.2.2",
-    "eslint": "^7.8.1",
+    "eslint": "^7.9.0",
     "eslint-plugin-vue": "^6.2.2",
     "fibers": "^5.0.0",
     "node-sass": "^4.14.1",
@@ -42,5 +42,8 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"
+  },
+  "resolutions": {
+    "yargs-parser": ">=18.1.2"
   }
 }
