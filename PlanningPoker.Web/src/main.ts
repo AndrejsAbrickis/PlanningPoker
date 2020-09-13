@@ -7,7 +7,7 @@ import router from './router';
 Vue.config.productionTip = false;
 
 const HUBS = {
-  GAME: 'https://localhost:5001/gamehub',
+  GAME: '/gamehub',
 };
 
 const gameHub = new HubConnectionBuilder().withUrl(HUBS.GAME).build();
